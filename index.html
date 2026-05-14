@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GTA VI Tracker</title>
+
+  <link rel="stylesheet" href="style.css"/>
+</head>
+
+<body>
+
+<div class="container">
+
+  <!-- LEFT SIDE -->
+  <div class="main">
+
+    <h1>GTA VI Tracker</h1>
+
+    <!-- STATUS BADGES -->
+    <div class="card">
+
+      <h3>Status System</h3>
+
+      <div class="badges">
+
+        <span class="badge online" id="liveBadge">
+          LIVE SYNC
+        </span>
+
+        <span class="badge monitoring" id="trailerBadge">
+          TRAILER WATCH
+        </span>
+
+        <span class="badge pending" id="releaseBadge">
+          RELEASE TRACK
+        </span>
+
+      </div>
+
+    </div>
+
+    <!-- COUNTDOWN -->
+    <div class="card">
+
+      <h3>Countdown</h3>
+
+      <div class="timer">
+
+        <div>
+          <span id="days">0</span>
+          <small>Days</small>
+        </div>
+
+        <div>
+          <span id="hours">0</span>
+          <small>Hours</small>
+        </div>
+
+        <div>
+          <span id="minutes">0</span>
+          <small>Minutes</small>
+        </div>
+
+        <div>
+          <span id="seconds">0</span>
+          <small>Seconds</small>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- STORE STATUS -->
+    <div class="grid">
+
+      <div class="card">
+
+        <h3>PlayStation Store</h3>
+        <p id="psStatus">Checking...</p>
+        <p id="psPreorder" class="preorder"></p>
+
+      </div>
+
+      <div class="card">
+
+        <h3>Xbox Store</h3>
+        <p id="xboxStatus">Checking...</p>
+        <p id="xboxPreorder" class="preorder"></p>
+
+      </div>
+
+    </div>
+
+    <!-- WISHLIST -->
+    <div class="card">
+
+      <h3>Wishlist GTA VI</h3>
+
+      <div class="wishlist-grid">
+
+        <a
+          class="wishlist-btn"
+          href="https://store.playstation.com/en-se/concept/10000730"
+          target="_blank"
+          rel="noopener">
+          Add to PlayStation Wishlist
+        </a>
+
+        <a
+          class="wishlist-btn"
+          href="https://www.xbox.com/sv-SE/games/store/grand-theft-auto-vi/9NL3WWNZLZZN/0010"
+          target="_blank"
+          rel="noopener">
+          Add to Xbox Wishlist
+        </a>
+
+      </div>
+
+    </div>
+
+    <!-- REGION AVAILABILITY -->
+    <div class="card">
+
+      <h3>Region Availability</h3>
+
+      <div id="regions">
+
+        <div><strong>US</strong>: Pending</div>
+        <div><strong>Europe</strong>: Pending</div>
+        <div><strong>Japan</strong>: Pending</div>
+        <div><strong>Australia</strong>: Pending</div>
+
+      </div>
+
+    </div>
+
+    <!-- GTA VI TRAILERS -->
+    <div class="card">
+
+      <h3>GTA VI Trailers</h3>
+
+      <div id="latestVideo" class="trailer-grid" aria-live="polite">
+
+        <p>Loading trailers...</p>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- RIGHT SIDE -->
+  <div class="sidebar">
+
+    <!-- ROCKSTAR NEWSWIRE -->
+    <div class="card">
+
+      <h3>Rockstar Newswire</h3>
+
+      <div id="newswire">
+
+        <p>Loading latest posts...</p>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>

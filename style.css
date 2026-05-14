@@ -1,0 +1,347 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* BODY */
+body {
+  background: #1f1f1f;
+  color: white;
+  font-family: Arial, sans-serif;
+  padding: 20px;
+  min-height: 100vh;
+}
+
+/* LAYOUT */
+.container {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+  max-width: 1400px;
+  margin: auto;
+}
+
+/* COLUMNS */
+.main,
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* TITLE */
+h1 {
+  text-align: center;
+  font-size: 38px;
+  margin-bottom: 10px;
+}
+
+/* CARDS */
+.card {
+  background: #252525;
+  border-radius: 18px;
+  padding: 20px;
+  box-shadow: 0 0 12px rgba(0,0,0,0.35);
+  transition: transform 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+}
+
+/* GRID */
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+/* BADGES */
+.badges {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.badge {
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+}
+
+.online {
+  background: #2e7d32;
+}
+
+.monitoring {
+  background: #1565c0;
+}
+
+.pending {
+  background: #ef6c00;
+}
+
+/* STATUS */
+#releaseStatus {
+  font-size: 28px;
+  margin-bottom: 8px;
+}
+
+#prediction {
+  color: #bdbdbd;
+}
+
+/* ===================================== */
+/* COUNTDOWN (ANIMATED) */
+/* ===================================== */
+
+.timer {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin-top: 20px;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.timer div {
+  flex: 1;
+  min-width: 90px;
+  background: linear-gradient(145deg, #292929, #1c1c1c);
+  border: 1px solid #333;
+  padding: 18px;
+  border-radius: 16px;
+  text-align: center;
+  box-shadow:
+    0 0 10px rgba(0,0,0,0.4),
+    0 0 15px rgba(94, 94, 94, 0.08);
+  animation: pulseGlow 2s infinite ease-in-out;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.timer div:hover {
+  transform: translateY(-4px);
+  box-shadow:
+    0 0 20px rgba(0,0,0,0.4),
+    0 0 40px rgba(94, 94, 94, 0.08);
+}
+
+.timer span {
+  display: block;
+  font-size: 38px;
+  font-weight: bold;
+  color: #555555;
+  text-shadow: 0 0 8px rgba(44, 44, 44, 0.7);
+  animation: tick 1.5s ease-in-out infinite;
+  will-change: transform;
+}
+
+.timer small {
+  display: block;
+  margin-top: 6px;
+  color: #bdbdbd;
+  font-size: 13px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+/* NUMBER ANIMATION */
+@keyframes tick {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.08); }
+  100% { transform: scale(1); }
+}
+
+/* GLOW ANIMATION */
+@keyframes pulseGlow {
+  0% {
+    box-shadow:
+      0 0 10px rgba(0,0,0,0.4),
+      0 0 12px rgba(20, 20, 20, 0.7);
+  }
+
+  50% {
+    box-shadow:
+      0 0 20px rgba(44, 44, 44, 0.7),
+      0 0 30px rgba(20, 20, 20, 0.7);
+  }
+
+  100% {
+    box-shadow:
+      0 0 10px rgba(0,0,0,0.4),
+      0 0 12px rgba(20, 20, 20, 0.7);
+  }
+}
+
+/* STORE STATUS */
+.preorder {
+  color: #4caf50;
+  margin-top: 10px;
+  font-weight: bold;
+  font-size: 15px;
+}
+
+/* REGIONS */
+#regions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+#regions div {
+  background: #292929;
+  padding: 12px;
+  border-radius: 10px;
+}
+
+/* VIDEO */
+.video-container {
+  position: relative;
+  width: 100%;
+  padding-bottom: 56.25%;
+  overflow: hidden;
+  border-radius: 14px;
+  margin-top: 15px;
+  background: black;
+}
+
+.video-container iframe {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  top: 0;
+  left: 0;
+}
+
+/* ===================================== */
+/* 🎮 TRAILER GRID (FIX ADDED) */
+/* ===================================== */
+
+.trailer-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Thumbnail styling */
+.trailer-grid img {
+  width: 100%;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.trailer-grid img:hover {
+  transform: scale(1.02);
+  box-shadow: 0 0 25px rgba(76,175,80,0.25);
+}
+
+/* NEWSWIRE */
+#newswire {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+#newswire div {
+  border-bottom: 1px solid #333;
+  padding-bottom: 12px;
+}
+
+#newswire div:last-child {
+  border-bottom: none;
+}
+
+#newswire a {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+  line-height: 1.4;
+  transition: color 0.2s ease;
+}
+
+#newswire a:hover {
+  color: #4caf50;
+}
+
+#newswire p {
+  color: #9e9e9e;
+  font-size: 13px;
+  margin-top: 5px;
+  line-height: 1.4;
+}
+
+/* WISHLIST */
+.wishlist-btn {
+  display: block;
+  margin: 10px 0;
+  padding: 12px;
+  background: #333;
+  text-align: center;
+  border-radius: 10px;
+  color: white;
+  text-decoration: none;
+}
+
+/* LINKS */
+a {
+  transition: opacity 0.2s ease;
+}
+
+a:hover {
+  opacity: 0.85;
+}
+
+/* SCROLLBAR */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1f1f1f;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #444;
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #666;
+}
+
+/* MOBILE */
+@media (max-width: 1000px) {
+  .container {
+    grid-template-columns: 1fr;
+  }
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  body {
+    padding: 12px;
+  }
+  h1 {
+    font-size: 28px;
+  }
+  .card {
+    padding: 16px;
+  }
+  .timer {
+    flex-wrap: wrap;
+  }
+  .timer div {
+    min-width: 45%;
+  }
+  .timer span {
+    font-size: 28px;
+  }
+}
