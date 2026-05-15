@@ -48,15 +48,16 @@ async function getNews() {
 
   if (!html) return fallbackNewswire();
 
-  const matches = [...html.matchAll(/newswire\/article\/[a-zA-Z0-9]+\/[^\"]+/g)];
+  const matches = [
+    ...html.matchAll(/\/newswire\/article\/[a-zA-Z0-9]+\/[^\"]+/g)
+  ];
 
   const posts = [];
-
   const seen = new Set();
 
   for (const m of matches) {
 
-    const path = "/" + m[0].split("newswire")[1];
+    const path = m[0];
 
     if (seen.has(path)) continue;
     seen.add(path);
@@ -101,12 +102,11 @@ function cleanNewswireTitle(path) {
    FALLBACK NEWSWIRE
 ========================= */
 function fallbackNewswire() {
-
   return [
     {
       title: "Rockstar Newswire",
       link: "https://www.rockstargames.com/newswire",
-      summary: "Latest updates from Rockstar Games"
+      summary: "Unable to load live posts (fallback mode)"
     }
   ];
 }
