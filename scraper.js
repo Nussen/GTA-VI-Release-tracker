@@ -72,7 +72,7 @@ async function getNews() {
     if (posts.length >= 6) break;
   }
 
-  return posts.length ? posts : fallbackNewswire();
+  return fallbackNewswire();
 }
 
 /* =========================
