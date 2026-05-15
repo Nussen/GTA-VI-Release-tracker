@@ -149,7 +149,7 @@ async function run() {
         ? "🔥 PREORDER DETECTED"
         : "Monitoring Stores",
 
-    prediction: "Prediction 2026-11-19 T00:00:00Z",
+    prediction: "Prediction 2026-05-18",
 
     releaseDate: "2026-11-19T00:00:00",
 
