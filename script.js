@@ -22,6 +22,7 @@ function setBadge(id, text, type) {
 function showTrailer3(videoId) {
 
   loadGTAVITrailers([
+
     {
       slot: "Trailer 1",
       title: "Grand Theft Auto VI Trailer 1",
@@ -89,13 +90,6 @@ async function checkForNewTrailers() {
 }
 
 /* =========================
-   REAL-TIME LOOP
-========================= */
-
-/* Uncomment when backend exists */
-// setInterval(checkForNewTrailers, 60000);
-
-/* =========================
    LOAD DATA
 ========================= */
 async function loadData() {
@@ -105,18 +99,15 @@ async function loadData() {
     const res = await fetch("data.json");
     const data = await res.json();
 
-    /* SAFE ELEMENT CHECKS */
     const releaseStatus = document.getElementById("releaseStatus");
     const prediction = document.getElementById("prediction");
 
     if (releaseStatus) {
-      releaseStatus.innerText =
-        data.releaseStatus || "Loading...";
+      releaseStatus.innerText = data.releaseStatus || "Loading...";
     }
 
     if (prediction) {
-      prediction.innerText =
-        data.prediction || "";
+      prediction.innerText = data.prediction || "";
     }
 
     document.getElementById("psStatus").innerText =
@@ -126,67 +117,40 @@ async function loadData() {
       data.xbox || "";
 
     /* =========================
-       PREORDER COLORS
+       PREORDER STATUS (FIXED CLEAN VERSION)
     ========================= */
 
-    const psPreorder =
-      document.getElementById("psPreorder");
+    function setPreorderStatus(el, value) {
 
-    const xboxPreorder =
-      document.getElementById("xboxPreorder");
+      if (!el) return;
 
-    /* PLAYSTATION */
-    psPreorder.innerText =
-      data.psPreorder || "";
+      el.innerText = value || "";
 
-    psPreorder.classList.remove(
-      "available",
-      "unavailable"
-    );
+      el.classList.remove("available", "unavailable");
 
-    if (
-      (data.psPreorder || "")
-        .toLowerCase()
-        .includes("available")
-    ) {
+      const isAvailable =
+        (value || "")
+          .toLowerCase()
+          .includes("available");
 
-      psPreorder.classList.add("available");
-
-    } else {
-
-      psPreorder.classList.add("unavailable");
+      el.classList.add(isAvailable ? "available" : "unavailable");
     }
 
-    /* XBOX */
-    xboxPreorder.innerText =
-      data.xboxPreorder || "";
+    const psPreorder = document.getElementById("psPreorder");
+    const xboxPreorder = document.getElementById("xboxPreorder");
 
-    xboxPreorder.classList.remove(
-      "available",
-      "unavailable"
-    );
+    setPreorderStatus(psPreorder, data.psPreorder);
+    setPreorderStatus(xboxPreorder, data.xboxPreorder);
 
-    if (
-      (data.xboxPreorder || "")
-        .toLowerCase()
-        .includes("available")
-    ) {
+    /* =========================
+       LOAD UI
+    ========================= */
 
-      xboxPreorder.classList.add("available");
-
-    } else {
-
-      xboxPreorder.classList.add("unavailable");
-    }
-
-    /* LOAD UI */
     loadRegions(data.regions || {});
     loadNewswire(data.newswire || []);
 
-    /* SAFE TRAILER FALLBACK */
     loadGTAVITrailers(
-      Array.isArray(data.gtaviTrailers) &&
-      data.gtaviTrailers.length
+      Array.isArray(data.gtaviTrailers) && data.gtaviTrailers.length
         ? data.gtaviTrailers
         : [
             {
@@ -195,14 +159,12 @@ async function loadData() {
               link: "https://www.youtube.com/watch?v=QdBZY2fkU-0",
               thumbnail: "https://img.youtube.com/vi/QdBZY2fkU-0/maxresdefault.jpg"
             },
-
             {
               slot: "Trailer 2",
               title: "GTA VI Trailer 2",
               link: "https://www.youtube.com/watch?v=VQRLujxTm3c",
               thumbnail: "https://img.youtube.com/vi/VQRLujxTm3c/maxresdefault.jpg"
             },
-
             {
               slot: "Trailer 3",
               comingSoon: true
@@ -225,10 +187,7 @@ function startCountdown(dateString) {
 
   const target = new Date(dateString).getTime();
 
-  if (isNaN(target)) {
-    console.error("Invalid releaseDate:", dateString);
-    return;
-  }
+  if (isNaN(target)) return;
 
   function update() {
 
@@ -340,14 +299,7 @@ function loadGTAVITrailers(trailers) {
 
       div.innerHTML = `
         <div class="video-container"
-          style="
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            background:#111;
-            color:#aaa;
-            font-size:18px;
-          ">
+          style="display:flex;align-items:center;justify-content:center;background:#111;color:#aaa;font-size:18px;">
           ${t.slot} — Coming soon
         </div>
       `;
@@ -355,37 +307,16 @@ function loadGTAVITrailers(trailers) {
     } else {
 
       div.innerHTML = `
-        <div style="
-          color:#4caf50;
-          font-weight:bold;
-          margin-bottom:8px;
-        ">
+        <div style="color:#4caf50;font-weight:bold;margin-bottom:8px">
           ${t.slot}
         </div>
 
         <a href="${t.link}" target="_blank">
-          <img
-            src="${t.thumbnail}"
-            style="
-              width:100%;
-              border-radius:12px;
-              margin-bottom:10px;
-              cursor:pointer;
-              box-shadow:0 0 20px rgba(0,0,0,0.4);
-            "
-          />
+          <img src="${t.thumbnail}" style="width:100%;border-radius:12px;margin-bottom:10px;cursor:pointer;" />
         </a>
 
         <div>
-          <a
-            href="${t.link}"
-            target="_blank"
-            style="
-              color:white;
-              font-weight:bold;
-              text-decoration:none;
-            "
-          >
+          <a href="${t.link}" target="_blank" style="color:white;font-weight:bold;text-decoration:none">
             ${t.title}
           </a>
         </div>
@@ -413,7 +344,7 @@ function notifyUser(text) {
 ========================= */
 loadData();
 
-/* INITIAL BADGES */
+/* BADGES */
 setBadge("liveBadge", "LIVE SYNC", "online");
 setBadge("trailerBadge", "TRAILER WATCH", "monitoring");
 setBadge("releaseBadge", "RELEASE TRACK", "pending");
