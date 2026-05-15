@@ -88,7 +88,7 @@ function fallbackNewswire() {
   return [
     {
       title: "Rockstar Newswire",
-      link: "https://www.rockstargames.com/newswire/article/ak3ak31a49a221/grand-theft-auto-vi-is-now-set-to-launch-november-19-2026",
+      link: "https://www.rockstargames.com/newswire",
       summary: "Unable to load live posts (fallback mode)"
     }
   ];
