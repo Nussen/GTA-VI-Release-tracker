@@ -1,520 +1,218 @@
 const CHANNEL_ID = "UC6VcWc1rAoWdBCM0JxrRQ3A";
 
 /* =========================
-   API CONFIG
-========================= */
-
-const API_URL = "/api/data";
-
-/* =========================
    BADGE SYSTEM
 ========================= */
-
 function setBadge(id, text, type) {
-
   const el = document.getElementById(id);
-
   if (!el) return;
 
   el.innerText = text;
 
-  el.classList.remove(
-    "online",
-    "monitoring",
-    "pending"
-  );
-
+  el.classList.remove("online", "monitoring", "pending");
   el.classList.add(type);
-}
-
-/* =========================
-   ERROR UI
-========================= */
-
-function showError(message) {
-
-  const releaseStatus =
-    document.getElementById("releaseStatus");
-
-  if (!releaseStatus) return;
-
-  releaseStatus.innerText = message;
-  releaseStatus.style.color = "#f44336";
 }
 
 /* =========================
    TRAILER 3 DISPLAY
 ========================= */
-
 function showTrailer3(videoId) {
-
   loadGTAVITrailers([
-
     {
       slot: "Trailer 1",
-
-      title:
-        "Grand Theft Auto VI Trailer 1",
-
-      link:
-        "https://www.youtube.com/watch?v=QdBZY2fkU-0",
-
-      thumbnail:
-        "https://img.youtube.com/vi/QdBZY2fkU-0/maxresdefault.jpg"
+      title: "Grand Theft Auto VI Trailer 1",
+      link: "https://www.youtube.com/watch?v=QdBZY2fkU-0",
+      thumbnail: "https://img.youtube.com/vi/QdBZY2fkU-0/maxresdefault.jpg"
     },
-
     {
       slot: "Trailer 2",
-
-      title:
-        "Grand Theft Auto VI Trailer 2",
-
-      link:
-        "https://www.youtube.com/watch?v=VQRLujxTm3c",
-
-      thumbnail:
-        "https://img.youtube.com/vi/VQRLujxTm3c/maxresdefault.jpg"
+      title: "Grand Theft Auto VI Trailer 2",
+      link: "https://www.youtube.com/watch?v=VQRLujxTm3c",
+      thumbnail: "https://img.youtube.com/vi/VQRLujxTm3c/maxresdefault.jpg"
     },
-
     {
       slot: "Trailer 3",
-
-      title:
-        "Grand Theft Auto VI Trailer 3",
-
-      link:
-        `https://www.youtube.com/watch?v=${videoId}`,
-
-      thumbnail:
-        `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`
+      title: "Grand Theft Auto VI Trailer 3",
+      link: `https://www.youtube.com/watch?v=${videoId}`,
+      thumbnail: `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`
     }
-
   ]);
 }
 
 /* =========================
-   TRAILER CHECK
+   TRAILER 3 DETECTION
 ========================= */
-
 async function checkForNewTrailers() {
-
   try {
-
-    const res =
-      await fetch("/api/youtube");
-
-    if (!res.ok) {
-      throw new Error("YouTube API failed");
-    }
+    const res = await fetch("/api/youtube");
+    if (!res.ok) throw new Error("YouTube API failed");
 
     const data = await res.json();
 
-    setBadge(
-      "trailerBadge",
-      "TRAILER WATCH",
-      "monitoring"
-    );
+    setBadge("trailerBadge", "TRAILER WATCH", "monitoring");
 
-    const known = [
-      "QdBZY2fkU-0",
-      "VQRLujxTm3c"
-    ];
+    const known = ["QdBZY2fkU-0", "VQRLujxTm3c"];
 
     const videos = data.items || [];
 
-    const newVideo =
-      videos.find(v =>
-        v.id?.videoId &&
-        !known.includes(v.id.videoId)
-      );
+    const newVideo = videos.find(
+      v => v.id?.videoId && !known.includes(v.id.videoId)
+    );
 
     if (newVideo?.id?.videoId) {
-
-      showTrailer3(
-        newVideo.id.videoId
-      );
-
-      setBadge(
-        "trailerBadge",
-        "TRAILER 3 DROPPED",
-        "online"
-      );
-
-      notifyUser(
-        "🚨 Trailer 3 just dropped!"
-      );
+      showTrailer3(newVideo.id.videoId);
+      setBadge("trailerBadge", "TRAILER 3 DROPPED", "online");
+      notifyUser("🚨 Trailer 3 just dropped!");
     }
-
   } catch (err) {
-
-    console.error(
-      "Trailer check failed:",
-      err
-    );
-
-    setBadge(
-      "trailerBadge",
-      "OFFLINE",
-      "pending"
-    );
+    setBadge("trailerBadge", "OFFLINE", "pending");
+    console.error("Trailer check failed:", err);
   }
 }
 
 /* =========================
    LOAD DATA
 ========================= */
-
 async function loadData() {
-
   try {
+    const res = await fetch("data.json");
+    const data = await res.json();
 
-    const res =
-      await fetch(API_URL);
-
-    if (!res.ok) {
-      throw new Error(
-        "Failed to load API data"
-      );
-    }
-
-    const data =
-      await res.json();
-
-    /* =========================
-       RELEASE STATUS
-    ========================= */
-
-    const releaseStatus =
-      document.getElementById(
-        "releaseStatus"
-      );
-
-    const prediction =
-      document.getElementById(
-        "prediction"
-      );
+    const releaseStatus = document.getElementById("releaseStatus");
+    const prediction = document.getElementById("prediction");
 
     if (releaseStatus) {
-
-      releaseStatus.innerText =
-        data.releaseStatus ||
-        "Loading...";
+      releaseStatus.innerText = data.releaseStatus || "Loading...";
     }
 
     if (prediction) {
-
-      prediction.innerText =
-        data.prediction || "";
+      prediction.innerText = data.prediction || "";
     }
+
+    const psStatus = document.getElementById("psStatus");
+    const xboxStatus = document.getElementById("xboxStatus");
+
+    if (psStatus) psStatus.innerText = data.playstation || "";
+    if (xboxStatus) xboxStatus.innerText = data.xbox || "";
 
     /* =========================
-       STORE STATUS
+       PREORDER COLORS (FIXED)
     ========================= */
 
-    const psStatus =
-      document.getElementById(
-        "psStatus"
-      );
+    const psPreorder = document.getElementById("psPreorder");
+    const xboxPreorder = document.getElementById("xboxPreorder");
 
-    const xboxStatus =
-      document.getElementById(
-        "xboxStatus"
-      );
+    function applyPreorderStyle(el, value) {
+      if (!el) return;
 
-    if (psStatus) {
+      const text = value || "";
+      const lower = text.toLowerCase();
 
-      psStatus.innerText =
-        data.playstation || "";
+      el.innerText = text;
+
+      el.classList.remove("available", "unavailable");
+
+      if (lower === "available 🔥" || lower === "available") {
+        el.classList.add("available");
+      } else {
+        el.classList.add("unavailable");
+      }
     }
 
-    if (xboxStatus) {
-
-      xboxStatus.innerText =
-        data.xbox || "";
-    }
+    applyPreorderStyle(psPreorder, data.psPreorder);
+    applyPreorderStyle(xboxPreorder, data.xboxPreorder);
 
     /* =========================
-       PREORDER COLORS
+       LOAD UI
     ========================= */
-
-    applyPreorderStyle(
-      document.getElementById(
-        "psPreorder"
-      ),
-      data.psPreorder
-    );
-
-    applyPreorderStyle(
-      document.getElementById(
-        "xboxPreorder"
-      ),
-      data.xboxPreorder
-    );
-
-        /* =========================
-       LOAD UI SECTIONS
-    ========================= */
-
-    loadRegions(
-      data.regions || {}
-    );
-
-    loadNewswire(
-      data.newswire || []
-    );
+    loadRegions(data.regions || {});
+    loadNewswire(data.newswire || []);
 
     loadGTAVITrailers(
-      Array.isArray(
-        data.gtaviTrailers
-      ) &&
-      data.gtaviTrailers.length
+      Array.isArray(data.gtaviTrailers) && data.gtaviTrailers.length
         ? data.gtaviTrailers
-        : fallbackTrailers()
+        : [
+            {
+              slot: "Trailer 1",
+              title: "GTA VI Trailer 1",
+              link: "https://www.youtube.com/watch?v=QdBZY2fkU-0",
+              thumbnail: "https://img.youtube.com/vi/QdBZY2fkU-0/maxresdefault.jpg"
+            },
+            {
+              slot: "Trailer 2",
+              title: "GTA VI Trailer 2",
+              link: "https://www.youtube.com/watch?v=VQRLujxTm3c",
+              thumbnail: "https://img.youtube.com/vi/VQRLujxTm3c/maxresdefault.jpg"
+            },
+            {
+              slot: "Trailer 3",
+              comingSoon: true
+            }
+          ]
     );
 
-    /* =========================
-       COUNTDOWN
-    ========================= */
-
-    if (data.releaseDate) {
-
-      startCountdown(
-        data.releaseDate
-      );
-    }
-
-    /* =========================
-       LAST UPDATED
-    ========================= */
-
-    console.log(
-      "Last updated:",
-      data.lastUpdated
-    );
+    startCountdown(data.releaseDate);
 
   } catch (err) {
-
-    console.error(
-      "loadData error:",
-      err
-    );
-
-    showError(
-      "⚠ Unable to load GTA VI tracker"
-    );
-  }
-}
-
-/* =========================
-   PREORDER STYLE ENGINE
-========================= */
-
-function applyPreorderStyle(
-  element,
-  value
-) {
-
-  if (!element) return;
-
-  const text =
-    value || "";
-
-  const lower =
-    text.toLowerCase();
-
-  element.innerText =
-    text;
-
-  element.classList.remove(
-    "available",
-    "unavailable"
-  );
-
-  if (
-    lower.includes("available") &&
-    !lower.includes("not")
-  ) {
-
-    element.classList.add(
-      "available"
-    );
-
-  } else {
-
-    element.classList.add(
-      "unavailable"
-    );
+    console.error("loadData error:", err);
   }
 }
 
 /* =========================
    COUNTDOWN
 ========================= */
-
-let countdownInterval;
-
-function startCountdown(
-  dateString
-) {
-
-  const target =
-    new Date(dateString)
-      .getTime();
+function startCountdown(dateString) {
+  const target = new Date(dateString).getTime();
 
   if (isNaN(target)) {
-
-    console.error(
-      "Invalid release date:",
-      dateString
-    );
-
+    console.error("Invalid releaseDate:", dateString);
     return;
   }
 
-  clearInterval(
-    countdownInterval
-  );
-
   function update() {
-
     const now = Date.now();
-
-    const diff =
-      target - now;
+    const diff = target - now;
 
     if (diff <= 0) {
-
-      setCountdown(
-        0,
-        0,
-        0,
-        0
-      );
-
+      document.getElementById("days").innerText = "0";
+      document.getElementById("hours").innerText = "0";
+      document.getElementById("minutes").innerText = "0";
+      document.getElementById("seconds").innerText = "0";
       return;
     }
 
-    const days =
-      Math.floor(
-        diff / 86400000
-      );
-
-    const hours =
-      Math.floor(
-        (diff % 86400000)
-        / 3600000
-      );
-
-    const minutes =
-      Math.floor(
-        (diff % 3600000)
-        / 60000
-      );
-
-    const seconds =
-      Math.floor(
-        (diff % 60000)
-        / 1000
-      );
-
-    setCountdown(
-      days,
-      hours,
-      minutes,
-      seconds
-    );
+    document.getElementById("days").innerText = Math.floor(diff / 86400000);
+    document.getElementById("hours").innerText = Math.floor((diff % 86400000) / 3600000);
+    document.getElementById("minutes").innerText = Math.floor((diff % 3600000) / 60000);
+    document.getElementById("seconds").innerText = Math.floor((diff % 60000) / 1000);
   }
 
   update();
-
-  countdownInterval =
-    setInterval(
-      update,
-      1000
-    );
-}
-
-/* =========================
-   SET COUNTDOWN
-========================= */
-
-function setCountdown(
-  days,
-  hours,
-  minutes,
-  seconds
-) {
-
-  document.getElementById(
-    "days"
-  ).innerText = days;
-
-  document.getElementById(
-    "hours"
-  ).innerText = hours;
-
-  document.getElementById(
-    "minutes"
-  ).innerText = minutes;
-
-  document.getElementById(
-    "seconds"
-  ).innerText = seconds;
+  setInterval(update, 1000);
 }
 
 /* =========================
    REGIONS
 ========================= */
-
-function loadRegions(
-  regions
-) {
-
-  const box =
-    document.getElementById(
-      "regions"
-    );
-
+function loadRegions(regions) {
+  const box = document.getElementById("regions");
   if (!box) return;
 
   box.innerHTML = "";
 
   const flags = {
-
     US: "🇺🇸",
-
     Europe: "🇪🇺",
-
     Japan: "🇯🇵",
-
     Australia: "🇦🇺"
   };
 
-  Object.entries(
-    regions
-  ).forEach(([key, value]) => {
-
-    const div =
-      document.createElement(
-        "div"
-      );
-
-    div.className =
-      "region-row";
-
+  Object.entries(regions).forEach(([key, value]) => {
+    const div = document.createElement("div");
     div.innerHTML = `
-
-      <span class="region-flag">
-        ${flags[key] || "🌍"}
-      </span>
-
-      <strong>${key}</strong>
-
-      <span class="region-status">
-        ${value}
-      </span>
+      <span style="margin-right:8px">${flags[key] || "🌍"}</span>
+      <strong>${key}</strong>: ${value}
     `;
-
     box.appendChild(div);
   });
 }
@@ -522,68 +220,18 @@ function loadRegions(
 /* =========================
    NEWSWIRE
 ========================= */
-
-function loadNewswire(
-  items
-) {
-
-  const box =
-    document.getElementById(
-      "newswire"
-    );
-
+function loadNewswire(items) {
+  const box = document.getElementById("newswire");
   if (!box) return;
 
   box.innerHTML = "";
 
-  if (!items.length) {
-
-    box.innerHTML = `
-      <p>No newswire posts available.</p>
-    `;
-
-    return;
-  }
-
   items.forEach(n => {
-
-    const div =
-      document.createElement(
-        "div"
-      );
-
-    div.className =
-      "news-card";
+    const div = document.createElement("div");
 
     div.innerHTML = `
-
-      <a
-        href="${n.link}"
-        target="_blank"
-        class="news-link"
-      >
-
-        ${
-          n.image
-            ? `
-            <img
-              src="${n.image}"
-              alt="${n.title}"
-              class="news-image"
-            />
-          `
-            : ""
-        }
-
-        <div class="news-title">
-          ${n.title}
-        </div>
-
-      </a>
-
-      <p class="news-summary">
-        ${n.summary || ""}
-      </p>
+      <a href="${n.link}" target="_blank">${n.title}</a>
+      <p>${n.summary || ""}</p>
     `;
 
     box.appendChild(div);
@@ -593,75 +241,38 @@ function loadNewswire(
 /* =========================
    TRAILERS
 ========================= */
-
-function loadGTAVITrailers(
-  trailers
-) {
-
-  const box =
-    document.getElementById(
-      "latestVideo"
-    );
-
+function loadGTAVITrailers(trailers) {
+  const box = document.getElementById("latestVideo");
   if (!box) return;
 
   box.innerHTML = "";
 
   trailers.forEach(t => {
-
-    const div =
-      document.createElement(
-        "div"
-      );
-
-    div.className =
-      "trailer-card";
+    const div = document.createElement("div");
+    div.style.marginBottom = "20px";
 
     if (t.comingSoon) {
-
       div.innerHTML = `
-
-        <div class="video-container trailer-coming">
-
-          ${t.slot}
-          — Coming Soon
-
+        <div class="video-container"
+          style="display:flex;align-items:center;justify-content:center;
+          background:#111;color:#aaa;font-size:18px;">
+          ${t.slot} — Coming soon
         </div>
       `;
-
     } else {
-
       div.innerHTML = `
-
-        <div class="trailer-slot">
+        <div style="color:#4caf50;font-weight:bold;margin-bottom:8px">
           ${t.slot}
         </div>
 
-        <a
-          href="${t.link}"
-          target="_blank"
-        >
-
-          <img
-            src="${t.thumbnail}"
-            alt="${t.title}"
-            class="trailer-image"
-          />
-
+        <a href="${t.link}" target="_blank">
+          <img src="${t.thumbnail}" style="width:100%;border-radius:12px;margin-bottom:10px;cursor:pointer;box-shadow:0 0 20px rgba(0,0,0,0.4);" />
         </a>
 
         <div>
-
-          <a
-            href="${t.link}"
-            target="_blank"
-            class="trailer-title"
-          >
-
+          <a href="${t.link}" target="_blank" style="color:white;font-weight:bold;text-decoration:none">
             ${t.title}
-
           </a>
-
         </div>
       `;
     }
@@ -671,63 +282,12 @@ function loadGTAVITrailers(
 }
 
 /* =========================
-   FALLBACK TRAILERS
-========================= */
-
-function fallbackTrailers() {
-
-  return [
-
-    {
-      slot: "Trailer 1",
-
-      title:
-        "Grand Theft Auto VI Trailer 1",
-
-      link:
-        "https://www.youtube.com/watch?v=QdBZY2fkU-0",
-
-      thumbnail:
-        "https://img.youtube.com/vi/QdBZY2fkU-0/maxresdefault.jpg"
-    },
-
-    {
-      slot: "Trailer 2",
-
-      title:
-        "Grand Theft Auto VI Trailer 2",
-
-      link:
-        "https://www.youtube.com/watch?v=VQRLujxTm3c",
-
-      thumbnail:
-        "https://img.youtube.com/vi/VQRLujxTm3c/maxresdefault.jpg"
-    },
-
-    {
-      slot: "Trailer 3",
-      comingSoon: true
-    }
-  ];
-}
-
-/* =========================
    NOTIFICATIONS
 ========================= */
+function notifyUser(text) {
+  if (!("Notification" in window)) return;
 
-function notifyUser(
-  text
-) {
-
-  if (
-    !("Notification" in window)
-  ) return;
-
-  if (
-    Notification.permission
-    === "granted"
-  ) {
-
+  if (Notification.permission === "granted") {
     new Notification(text);
   }
 }
@@ -735,5 +295,8 @@ function notifyUser(
 /* =========================
    INIT
 ========================= */
-
 loadData();
+
+setBadge("liveBadge", "LIVE SYNC", "online");
+setBadge("trailerBadge", "TRAILER WATCH", "monitoring");
+setBadge("releaseBadge", "RELEASE TRACK", "pending");
