@@ -1,0 +1,59 @@
+name: GTA VI Tracker
+
+on:
+  schedule:
+    - cron: "*/30 * * * *"
+
+  workflow_dispatch:
+
+jobs:
+  tracker:
+
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # =========================
+      # NODE SETUP (OPTIMIZED)
+      # =========================
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+
+      # =========================
+      # INSTALL DEPENDENCIES
+      # =========================
+      - name: Install dependencies
+        run: |
+          npm install --omit=dev
+
+      # =========================
+      # RUN SCRAPER (SAFE MODE)
+      # =========================
+      - name: Run scraper
+        run: node scraper.js
+        continue-on-error: false
+
+      # =========================
+      # COMMIT CHANGES ONLY IF NEEDED
+      # =========================
+      - name: Commit updates
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+
+          git add data.json
+
+          git diff --cached --quiet && echo "No changes" && exit 0
+
+          git commit -m "Auto-update GTA VI tracker"
+
+          git push
