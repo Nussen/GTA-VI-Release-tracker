@@ -42,38 +42,21 @@ async function checkStore(url, keywords = []) {
 /* =========================
    NEWSWIRE (IMPROVED PARSER)
 ========================= */
-async function getNews() {
+function getNews() {
 
-  const html = await safeFetch("https://www.rockstargames.com/newswire");
+  return [
+    {
+      title: "GTA VI is Now Set to Launch November 19, 2026",
+      link: "https://www.rockstargames.com/newswire/article/ak3ak31a49a221/grand-theft-auto-vi-is-now-set-to-launch-november-19-2026",
+      summary: "Official Rockstar Games announcement"
+    },
 
-  if (!html) return fallbackNewswire();
-
-  const matches = [
-    ...html.matchAll(/\/newswire\/article\/[a-zA-Z0-9]+\/[^\"]+/g)
+    {
+      title: "Rockstar Newswire",
+      link: "https://www.rockstargames.com/newswire",
+      summary: "Latest Rockstar updates"
+    }
   ];
-
-  const posts = [];
-  const seen = new Set();
-
-  for (const m of matches) {
-
-    const path = m[0];
-
-    if (seen.has(path)) continue;
-    seen.add(path);
-
-    const fullUrl = "https://www.rockstargames.com" + path;
-
-    posts.push({
-      title: cleanNewswireTitle(path),
-      link: fullUrl,
-      summary: "Latest Rockstar Newswire update"
-    });
-
-    if (posts.length >= 6) break;
-  }
-
-  return posts.length ? posts : fallbackNewswire();
 }
 
 /* =========================
