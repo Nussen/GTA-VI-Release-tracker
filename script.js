@@ -251,7 +251,7 @@ async function loadData() {
       data.xboxPreorder
     );
 
-        /* =========================
+    /* =========================
        LOAD UI SECTIONS
     ========================= */
 
@@ -523,14 +523,12 @@ function loadRegions(
    NEWSWIRE
 ========================= */
 
-function loadNewswire(
-  items
-) {
+/* =========================
+   NEWSWIRE
+========================= */
+function loadNewswire(items) {
 
-  const box =
-    document.getElementById(
-      "newswire"
-    );
+  const box = document.getElementById("newswire");
 
   if (!box) return;
 
@@ -539,7 +537,9 @@ function loadNewswire(
   if (!items.length) {
 
     box.innerHTML = `
-      <p>No newswire posts available.</p>
+      <div class="news-empty">
+        No Rockstar Newswire posts available.
+      </div>
     `;
 
     return;
@@ -547,43 +547,41 @@ function loadNewswire(
 
   items.forEach(n => {
 
-    const div =
-      document.createElement(
-        "div"
-      );
+    const div = document.createElement("div");
 
-    div.className =
-      "news-card";
+    div.className = "news-item";
 
     div.innerHTML = `
 
-      <a
-        href="${n.link}"
-        target="_blank"
-        class="news-link"
-      >
-
-        ${
-          n.image
-            ? `
-            <img
-              src="${n.image}"
-              alt="${n.title}"
-              class="news-image"
-            />
+      ${
+        n.image
+          ? `
+            <a href="${n.link}" target="_blank">
+              <img
+                src="${n.image}"
+                alt="${n.title}"
+                class="news-thumb"
+              />
+            </a>
           `
-            : ""
-        }
+          : ""
+      }
 
-        <div class="news-title">
+      <div class="news-content">
+
+        <a
+          href="${n.link}"
+          target="_blank"
+          class="news-title"
+        >
           ${n.title}
-        </div>
+        </a>
 
-      </a>
+        <p class="news-summary">
+          ${n.summary || ""}
+        </p>
 
-      <p class="news-summary">
-        ${n.summary || ""}
-      </p>
+      </div>
     `;
 
     box.appendChild(div);
