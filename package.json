@@ -1,0 +1,19 @@
+{
+  "name": "gta-vi-tracker",
+  "version": "1.0.0",
+  "description": "GTA VI tracker dashboard with scraper, countdown, trailers, and newswire system",
+  "main": "scraper.js",
+  "type": "module",
+  "scripts": {
+    "start": "node scraper.js",
+    "scrape": "node scraper.js"
+  },
+  "dependencies": {
+    "node-fetch": "^3.3.2"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "author": "",
+  "license": "MIT"
+}
