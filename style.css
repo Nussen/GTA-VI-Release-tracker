@@ -30,7 +30,7 @@ body {
   gap: 20px;
 }
 
-/* TITLE */
+/* TITLE GTA VI Tracker*/
 h1 {
   text-align: center;
   font-size: 38px;
@@ -57,9 +57,10 @@ h1 {
   gap: 20px;
 }
 
-/*Store Status*/
+/*Store Status PlayStation Store Xbox store*/
 .grid h4 {
   margin-bottom: 8px;
+  margin-top: 12px;
   color: #ddd;
 }
 
@@ -72,7 +73,7 @@ h1 {
 }
 
 .badge {
-  padding: 8px 14px;
+  padding: 4px 14px;
   border-radius: 999px;
   font-size: 12px;
   font-weight: bold;
@@ -93,7 +94,7 @@ h1 {
 
 /* STATUS */
 #releaseStatus {
-  font-size: 28px;
+  font-size: 20px;
   margin-bottom: 8px;
 }
 
@@ -105,6 +106,7 @@ h1 {
 /* COUNTDOWN (ANIMATED) */
 /* ===================================== */
 
+/*Placement of timer boxes*/
 .timer {
   display: flex;
   justify-content: space-around;
@@ -114,11 +116,12 @@ h1 {
   flex-wrap: wrap;
 }
 
+/*Border around days/hour/minute/seconds boxes */
 .timer div {
   flex: 1;
   min-width: 90px;
   background: linear-gradient(145deg, #292929, #1c1c1c);
-  border: 1px solid #333;
+  border: 1px solid #202020;
   padding: 18px;
   border-radius: 16px;
   text-align: center;
@@ -136,6 +139,7 @@ h1 {
     0 0 40px rgba(94, 94, 94, 0.08);
 }
 
+/* Countdown shadow behind number */
 .timer span {
   display: block;
   font-size: 38px;
@@ -146,6 +150,7 @@ h1 {
   will-change: transform;
 }
 
+/* Countdown text */
 .timer small {
   display: block;
   margin-top: 6px;
