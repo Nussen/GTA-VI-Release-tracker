@@ -273,11 +273,23 @@ function loadRegions(regions) {
 
   box.innerHTML = "";
 
-  Object.entries(regions).forEach(([k, v]) => {
+  const flags = {
+    US: "🇺🇸",
+    Europe: "🇪🇺",
+    Japan: "🇯🇵",
+    Australia: "🇦🇺"
+  };
+
+  Object.entries(regions).forEach(([key, value]) => {
 
     const div = document.createElement("div");
 
-    div.innerHTML = `<strong>${k}</strong>: ${v}`;
+    const flag = flags[key] || "🌍";
+
+    div.innerHTML = `
+      <span style="margin-right:8px">${flag}</span>
+      <strong>${key}</strong>: ${value}
+    `;
 
     box.appendChild(div);
   });
