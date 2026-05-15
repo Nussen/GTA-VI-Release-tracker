@@ -1,4 +1,3 @@
-
 import fetch from "node-fetch";
 import fs from "fs";
 
@@ -27,7 +26,7 @@ async function safeFetch(url) {
 }
 
 /* =========================
-   STORE CHECK (IMPROVED)
+   STORE CHECK
 ========================= */
 async function checkStore(url, keywords = []) {
 
@@ -66,7 +65,7 @@ async function getNews() {
     const fullUrl = "https://www.rockstargames.com" + path;
 
     posts.push({
-      title: extractTitleFromUrl(path),
+      title: cleanNewswireTitle(path),
       link: fullUrl,
       summary: "Latest Rockstar Newswire update"
     });
@@ -80,9 +79,16 @@ async function getNews() {
 }
 
 /* =========================
-   TITLE IMPROVEMENT (light AI guess)
+   NEWSWIRE TITLE CLEANER (UPDATED)
 ========================= */
-function extractTitleFromUrl(path) {
+function cleanNewswireTitle(path) {
+
+  const slug = path.toLowerCase();
+
+  /* SPECIAL CASE: GTA VI ARTICLE */
+  if (slug.includes("grand-theft-auto-vi-is-now-set-to-launch")) {
+    return "GTA VI Launch Date Confirmed (Nov 19, 2026)";
+  }
 
   const clean = path
     .replace("/newswire/", "")
@@ -109,7 +115,7 @@ function fallbackNewswire() {
 }
 
 /* =========================
-   TRAILERS (FIXED STATIC CORE)
+   TRAILERS
 ========================= */
 function getFixedTrailers() {
 
