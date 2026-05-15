@@ -1,2 +1,4 @@
 # GTA-VI-Release-tracker
 This is a sparetime project to keep track of the release of GTA6
+[X] Work in progress
+[] Done
