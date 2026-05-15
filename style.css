@@ -179,10 +179,19 @@ h1 {
 
 /* STORE STATUS */
 .preorder {
-  color: #4caf50;
   margin-top: 10px;
   font-weight: bold;
   font-size: 15px;
+}
+
+/* AVAILABLE = GREEN */
+.available {
+  color: #4caf50;
+}
+
+/* NOT AVAILABLE = RED */
+.unavailable {
+  color: #f44336;
 }
 
 /* REGIONS */
