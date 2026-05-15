@@ -149,15 +149,15 @@ async function run() {
         ? "🔥 PREORDER DETECTED"
         : "Monitoring Stores",
 
-    prediction: "2026",
+    prediction: "Prediction 2026-11-19 T00:00:00Z",
 
     releaseDate: "2026-11-19T00:00:00",
 
     playstation: ps ? "FOUND" : "Not listed",
     xbox: xbox ? "FOUND" : "Not listed",
 
-    psPreorder: ps ? "AVAILABLE 🔥" : "Not available",
-    xboxPreorder: xbox ? "AVAILABLE 🔥" : "Not available",
+    psPreorder: ps ? "AVAILABLE 🔥" : "unavailable",
+    xboxPreorder: xbox ? "AVAILABLE 🔥" : "unavailable",
 
     regions: {
       US: ps || xbox ? "LIVE" : "Pending",
