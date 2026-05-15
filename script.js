@@ -4,15 +4,12 @@ const CHANNEL_ID = "UC6VcWc1rAoWdBCM0JxrRQ3A";
    BADGE SYSTEM
 ========================= */
 function setBadge(id, text, type) {
-
   const el = document.getElementById(id);
-
   if (!el) return;
 
   el.innerText = text;
 
   el.classList.remove("online", "monitoring", "pending");
-
   el.classList.add(type);
 }
 
@@ -20,23 +17,19 @@ function setBadge(id, text, type) {
    TRAILER 3 DISPLAY
 ========================= */
 function showTrailer3(videoId) {
-
   loadGTAVITrailers([
-
     {
       slot: "Trailer 1",
       title: "Grand Theft Auto VI Trailer 1",
       link: "https://www.youtube.com/watch?v=QdBZY2fkU-0",
       thumbnail: "https://img.youtube.com/vi/QdBZY2fkU-0/maxresdefault.jpg"
     },
-
     {
       slot: "Trailer 2",
       title: "Grand Theft Auto VI Trailer 2",
       link: "https://www.youtube.com/watch?v=VQRLujxTm3c",
       thumbnail: "https://img.youtube.com/vi/VQRLujxTm3c/maxresdefault.jpg"
     },
-
     {
       slot: "Trailer 3",
       title: "Grand Theft Auto VI Trailer 3",
@@ -50,41 +43,29 @@ function showTrailer3(videoId) {
    TRAILER 3 DETECTION
 ========================= */
 async function checkForNewTrailers() {
-
   try {
-
     const res = await fetch("/api/youtube");
-
     if (!res.ok) throw new Error("YouTube API failed");
 
     const data = await res.json();
 
     setBadge("trailerBadge", "TRAILER WATCH", "monitoring");
 
-    const known = [
-      "QdBZY2fkU-0",
-      "VQRLujxTm3c"
-    ];
+    const known = ["QdBZY2fkU-0", "VQRLujxTm3c"];
 
     const videos = data.items || [];
 
-    const newVideo = videos.find(v =>
-      v.id?.videoId && !known.includes(v.id.videoId)
+    const newVideo = videos.find(
+      v => v.id?.videoId && !known.includes(v.id.videoId)
     );
 
     if (newVideo?.id?.videoId) {
-
       showTrailer3(newVideo.id.videoId);
-
       setBadge("trailerBadge", "TRAILER 3 DROPPED", "online");
-
       notifyUser("🚨 Trailer 3 just dropped!");
     }
-
   } catch (err) {
-
     setBadge("trailerBadge", "OFFLINE", "pending");
-
     console.error("Trailer check failed:", err);
   }
 }
@@ -93,9 +74,7 @@ async function checkForNewTrailers() {
    LOAD DATA
 ========================= */
 async function loadData() {
-
   try {
-
     const res = await fetch("data.json");
     const data = await res.json();
 
@@ -110,42 +89,42 @@ async function loadData() {
       prediction.innerText = data.prediction || "";
     }
 
-    document.getElementById("psStatus").innerText =
-      data.playstation || "";
+    const psStatus = document.getElementById("psStatus");
+    const xboxStatus = document.getElementById("xboxStatus");
 
-    document.getElementById("xboxStatus").innerText =
-      data.xbox || "";
+    if (psStatus) psStatus.innerText = data.playstation || "";
+    if (xboxStatus) xboxStatus.innerText = data.xbox || "";
 
     /* =========================
-       PREORDER STATUS (FIXED CLEAN VERSION)
+       PREORDER COLORS (FIXED)
     ========================= */
-
-    function setPreorderStatus(el, value) {
-
-      if (!el) return;
-
-      el.innerText = value || "";
-
-      el.classList.remove("available", "unavailable");
-
-      const isAvailable =
-        (value || "")
-          .toLowerCase()
-          .includes("available");
-
-      el.classList.add(isAvailable ? "available" : "unavailable");
-    }
 
     const psPreorder = document.getElementById("psPreorder");
     const xboxPreorder = document.getElementById("xboxPreorder");
 
-    setPreorderStatus(psPreorder, data.psPreorder);
-    setPreorderStatus(xboxPreorder, data.xboxPreorder);
+    function applyPreorderStyle(el, value) {
+      if (!el) return;
+
+      const text = value || "";
+      const lower = text.toLowerCase();
+
+      el.innerText = text;
+
+      el.classList.remove("available", "unavailable");
+
+      if (lower === "available 🔥" || lower === "available") {
+        el.classList.add("available");
+      } else {
+        el.classList.add("unavailable");
+      }
+    }
+
+    applyPreorderStyle(psPreorder, data.psPreorder);
+    applyPreorderStyle(xboxPreorder, data.xboxPreorder);
 
     /* =========================
        LOAD UI
     ========================= */
-
     loadRegions(data.regions || {});
     loadNewswire(data.newswire || []);
 
@@ -175,7 +154,6 @@ async function loadData() {
     startCountdown(data.releaseDate);
 
   } catch (err) {
-
     console.error("loadData error:", err);
   }
 }
@@ -184,37 +162,29 @@ async function loadData() {
    COUNTDOWN
 ========================= */
 function startCountdown(dateString) {
-
   const target = new Date(dateString).getTime();
 
-  if (isNaN(target)) return;
+  if (isNaN(target)) {
+    console.error("Invalid releaseDate:", dateString);
+    return;
+  }
 
   function update() {
-
     const now = Date.now();
     const diff = target - now;
 
     if (diff <= 0) {
-
       document.getElementById("days").innerText = "0";
       document.getElementById("hours").innerText = "0";
       document.getElementById("minutes").innerText = "0";
       document.getElementById("seconds").innerText = "0";
-
       return;
     }
 
-    document.getElementById("days").innerText =
-      Math.floor(diff / 86400000);
-
-    document.getElementById("hours").innerText =
-      Math.floor((diff % 86400000) / 3600000);
-
-    document.getElementById("minutes").innerText =
-      Math.floor((diff % 3600000) / 60000);
-
-    document.getElementById("seconds").innerText =
-      Math.floor((diff % 60000) / 1000);
+    document.getElementById("days").innerText = Math.floor(diff / 86400000);
+    document.getElementById("hours").innerText = Math.floor((diff % 86400000) / 3600000);
+    document.getElementById("minutes").innerText = Math.floor((diff % 3600000) / 60000);
+    document.getElementById("seconds").innerText = Math.floor((diff % 60000) / 1000);
   }
 
   update();
@@ -225,9 +195,7 @@ function startCountdown(dateString) {
    REGIONS
 ========================= */
 function loadRegions(regions) {
-
   const box = document.getElementById("regions");
-
   if (!box) return;
 
   box.innerHTML = "";
@@ -240,16 +208,11 @@ function loadRegions(regions) {
   };
 
   Object.entries(regions).forEach(([key, value]) => {
-
     const div = document.createElement("div");
-
-    const flag = flags[key] || "🌍";
-
     div.innerHTML = `
-      <span style="margin-right:8px">${flag}</span>
+      <span style="margin-right:8px">${flags[key] || "🌍"}</span>
       <strong>${key}</strong>: ${value}
     `;
-
     box.appendChild(div);
   });
 }
@@ -258,15 +221,12 @@ function loadRegions(regions) {
    NEWSWIRE
 ========================= */
 function loadNewswire(items) {
-
   const box = document.getElementById("newswire");
-
   if (!box) return;
 
   box.innerHTML = "";
 
   items.forEach(n => {
-
     const div = document.createElement("div");
 
     div.innerHTML = `
@@ -282,37 +242,31 @@ function loadNewswire(items) {
    TRAILERS
 ========================= */
 function loadGTAVITrailers(trailers) {
-
   const box = document.getElementById("latestVideo");
-
   if (!box) return;
 
   box.innerHTML = "";
 
   trailers.forEach(t => {
-
     const div = document.createElement("div");
-
     div.style.marginBottom = "20px";
 
     if (t.comingSoon) {
-
       div.innerHTML = `
         <div class="video-container"
-          style="display:flex;align-items:center;justify-content:center;background:#111;color:#aaa;font-size:18px;">
+          style="display:flex;align-items:center;justify-content:center;
+          background:#111;color:#aaa;font-size:18px;">
           ${t.slot} — Coming soon
         </div>
       `;
-
     } else {
-
       div.innerHTML = `
         <div style="color:#4caf50;font-weight:bold;margin-bottom:8px">
           ${t.slot}
         </div>
 
         <a href="${t.link}" target="_blank">
-          <img src="${t.thumbnail}" style="width:100%;border-radius:12px;margin-bottom:10px;cursor:pointer;" />
+          <img src="${t.thumbnail}" style="width:100%;border-radius:12px;margin-bottom:10px;cursor:pointer;box-shadow:0 0 20px rgba(0,0,0,0.4);" />
         </a>
 
         <div>
@@ -331,7 +285,6 @@ function loadGTAVITrailers(trailers) {
    NOTIFICATIONS
 ========================= */
 function notifyUser(text) {
-
   if (!("Notification" in window)) return;
 
   if (Notification.permission === "granted") {
@@ -344,7 +297,6 @@ function notifyUser(text) {
 ========================= */
 loadData();
 
-/* BADGES */
 setBadge("liveBadge", "LIVE SYNC", "online");
 setBadge("trailerBadge", "TRAILER WATCH", "monitoring");
 setBadge("releaseBadge", "RELEASE TRACK", "pending");
