@@ -4,281 +4,227 @@
   box-sizing: border-box;
 }
 
-/* BODY */
+/* =========================
+   BASE
+========================= */
 body {
-  background: #1f1f1f;
-  color: white;
-  font-family: Arial, sans-serif;
+  background: #17181c;
+  color: #e6e6e6;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
   padding: 20px;
   min-height: 100vh;
+  line-height: 1.5;
 }
 
-/* LAYOUT */
+/* =========================
+   LAYOUT
+========================= */
 .container {
   display: grid;
   grid-template-columns: 2fr 1fr;
-  gap: 20px;
-  max-width: 1400px;
+  gap: 22px;
+  max-width: 1300px;
   margin: auto;
 }
 
-/* COLUMNS */
 .main,
 .sidebar {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 18px;
 }
 
-/* TITLE GTA VI Tracker*/
+/* =========================
+   TITLE
+========================= */
 h1 {
   text-align: center;
-  font-size: 38px;
-  margin-bottom: 10px;
+  font-size: 34px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: #ffffff;
 }
 
-/* CARDS */
+/* =========================
+   CARDS (CLEANER LOOK)
+========================= */
 .card {
-  background: #252525;
-  border-radius: 18px;
-  padding: 20px;
-  box-shadow: 0 0 12px rgba(0,0,0,0.35);
-  transition: transform 0.2s ease;
+  background: #1f2026;
+  border: 1px solid #2a2b33;
+  border-radius: 14px;
+  padding: 18px;
+  transition: transform 0.15s ease, border-color 0.2s ease;
 }
 
 .card:hover {
   transform: translateY(-2px);
+  border-color: #3a3b45;
 }
 
-/* GRID POTENTIALLY SPACE BETWEEN PLAYSTATION STORE AND XBOX STORE*/
+/* =========================
+   GRID (STORE CARDS)
+========================= */
 .grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 20px;
+  gap: 16px;
 }
 
-/*Store Status PlayStation Store Xbox store*/
-.grid h4 {
-  margin-bottom: 8px;
-  margin-top: 12px;
-  color: #ddd;
-}
-
-/* BADGES */
+/* =========================
+   BADGES (MODERN PILLS)
+========================= */
 .badges {
   display: flex;
   justify-content: center;
-  gap: 10px;
+  gap: 8px;
   flex-wrap: wrap;
 }
 
 .badge {
-  padding: 4px 14px;
+  padding: 6px 12px;
   border-radius: 999px;
-  font-size: 12px;
-  font-weight: bold;
-  letter-spacing: 0.5px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  border: 1px solid transparent;
 }
 
 .online {
-  background: #2e7d32;
+  background: rgba(46, 125, 50, 0.15);
+  color: #66bb6a;
+  border-color: rgba(102, 187, 106, 0.3);
 }
 
 .monitoring {
-  background: #1565c0;
+  background: rgba(21, 101, 192, 0.15);
+  color: #64b5f6;
+  border-color: rgba(100, 181, 246, 0.3);
 }
 
 .pending {
-  background: #ef6c00;
+  background: rgba(239, 108, 0, 0.15);
+  color: #ffa726;
+  border-color: rgba(255, 167, 38, 0.3);
 }
 
-/* STATUS ABOUT IF GAME IS RELEASED OR NOT */
+/* =========================
+   STATUS TEXT
+========================= */
 #releaseStatus {
-  font-size: 18px;
-  margin-bottom: 8px;
+  font-size: 20px;
+  font-weight: 600;
 }
 
 #prediction {
-  color: #bdbdbd;
+  color: #a9abb3;
+  font-size: 14px;
 }
 
-/* ===================================== */
-/* COUNTDOWN (ANIMATED) */
-/* ===================================== */
-
-/*Placement of timer boxes*/
+/* =========================
+   COUNTDOWN
+========================= */
 .timer {
   display: flex;
-  justify-content: space-around;
-  align-items: center;
-  margin-top: 20px;
-  gap: 15px;
+  justify-content: space-between;
+  gap: 12px;
   flex-wrap: wrap;
+  margin-top: 16px;
 }
 
-/*Border around days/hour/minute/seconds boxes */
 .timer div {
   flex: 1;
-  min-width: 90px;
-  background: linear-gradient(145deg, #2e2e2e, #1d1d1d);
-  border: 1px solid #202020;
-  padding: 9px;
-  border-radius: 16px;
+  min-width: 80px;
+  background: #191a1f;
+  border: 1px solid #2a2b33;
+  padding: 12px;
+  border-radius: 12px;
   text-align: center;
-  box-shadow:
-    0 0 10px rgba(0,0,0,0.4),
-    0 0 15px rgba(94, 94, 94, 0.08);
-  animation: pulseGlow 2s infinite ease-in-out;
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  transition: transform 0.2s ease;
 }
 
 .timer div:hover {
-  transform: translateY(-4px);
-  box-shadow:
-    0 0 20px rgba(0,0,0,0.4),
-    0 0 40px rgba(94, 94, 94, 0.08);
+  transform: translateY(-3px);
 }
 
-/* Countdown shadow behind number */
 .timer span {
   display: block;
-  font-size: 38px;
-  font-weight: bold;
-  color: #bdbdbd;
-  text-shadow: 0 0 8px rgba(44, 44, 44, 0.7);
-  animation: tick 1.5s ease-in-out infinite;
-  will-change: transform;
+  font-size: 26px;
+  font-weight: 700;
+  color: #ffffff;
 }
 
-/* Countdown text */
 .timer small {
-  display: block;
-  margin-top: 6px;
-  color: #bdbdbd;
-  font-size: 13px;
-  letter-spacing: 1px;
+  font-size: 11px;
+  color: #a9abb3;
   text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
-/* NUMBER ANIMATION */
-@keyframes tick {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.08); }
-  100% { transform: scale(1); }
-}
-
-/* GLOW ANIMATION */
-@keyframes pulseGlow {
-  0% {
-    box-shadow:
-      0 0 10px rgba(0,0,0,0.4),
-      0 0 12px rgba(20, 20, 20, 0.7);
-  }
-
-  50% {
-    box-shadow:
-      0 0 20px rgba(44, 44, 44, 0.7),
-      0 0 30px rgba(20, 20, 20, 0.7);
-  }
-
-  100% {
-    box-shadow:
-      0 0 10px rgba(0,0,0,0.4),
-      0 0 12px rgba(20, 20, 20, 0.7);
-  }
-}
-
-/* STORE STATUS */
-.preorder {
-  margin-top: 10px;
-  font-weight: bold;
-  font-size: 15px;
-}
-
-/* AVAILABLE = GREEN */
+/* =========================
+   STORE STATUS COLORS
+========================= */
 .available {
-  color: #4caf50;
+  color: #66bb6a;
+  font-weight: 600;
 }
 
-/* NOT AVAILABLE = RED */
 .unavailable {
-  color: #f44336;
+  color: #ef5350;
+  font-weight: 600;
 }
 
-/* REGIONS */
+/* =========================
+   REGIONS (CLEAN LIST)
+========================= */
 #regions {
   display: flex;
   flex-direction: column;
 }
 
 #regions div {
-  padding: 12px;
-  border-bottom: 1px solid #333;
+  padding: 12px 10px;
+  border-bottom: 1px solid #2a2b33;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 #regions div:last-child {
   border-bottom: none;
 }
-/*Flags*/
-#regions div {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
 
-/* VIDEO */
-.video-container {
-  position: relative;
-  width: 100%;
-  padding-bottom: 56.25%;
-  overflow: hidden;
-  border-radius: 14px;
-  margin-top: 15px;
-  background: black;
-}
-
-.video-container iframe {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  border: 0;
-  top: 0;
-  left: 0;
-}
-
-/* ===================================== */
-/* 🎮 TRAILER GRID (FIX ADDED) */
-/* ===================================== */
-
+/* =========================
+   TRAILERS
+========================= */
 .trailer-grid {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 16px;
 }
 
-/* Thumbnail styling */
 .trailer-grid img {
-  width: 50%;
+  width: 100%;
   border-radius: 12px;
   cursor: pointer;
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  transition: transform 0.2s ease;
 }
 
 .trailer-grid img:hover {
-  transform: scale(1.02);
-  box-shadow: 0 0 25px rgba(76,175,80,0.25);
+  transform: scale(1.01);
 }
 
-/* NEWSWIRE */
+/* =========================
+   NEWSWIRE
+========================= */
 #newswire {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 12px;
 }
 
 #newswire div {
-  border-bottom: 1px solid #333;
-  padding-bottom: 12px;
+  border-bottom: 1px solid #2a2b33;
+  padding-bottom: 10px;
 }
 
 #newswire div:last-child {
@@ -286,64 +232,59 @@ h1 {
 }
 
 #newswire a {
-  color: white;
+  color: #ffffff;
   text-decoration: none;
-  font-weight: bold;
-  line-height: 1.4;
-  transition: color 0.2s ease;
+  font-weight: 600;
 }
 
 #newswire a:hover {
-  color: #4caf50;
+  color: #66bb6a;
 }
 
 #newswire p {
-  color: #9e9e9e;
+  color: #a9abb3;
   font-size: 13px;
-  margin-top: 5px;
-  line-height: 1.4;
+  margin-top: 4px;
 }
 
-/* WISHLIST */
+/* =========================
+   WISHLIST BUTTON
+========================= */
 .wishlist-btn {
   display: block;
-  margin: 10px 0;
   padding: 12px;
-  background: #333;
+  background: #262730;
+  border: 1px solid #2f303a;
   text-align: center;
   border-radius: 10px;
-  color: white;
+  color: #e6e6e6;
   text-decoration: none;
+  transition: background 0.2s ease;
 }
 
-/* LINKS */
-a {
-  transition: opacity 0.2s ease;
+.wishlist-btn:hover {
+  background: #2f303a;
 }
 
-a:hover {
-  opacity: 0.85;
-}
-
-/* SCROLLBAR */
+/* =========================
+   SCROLLBAR
+========================= */
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #1f1f1f;
+  background: #17181c;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #444;
+  background: #2f303a;
   border-radius: 999px;
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: #666;
-}
-
-/* MOBILE */
+/* =========================
+   MOBILE
+========================= */
 @media (max-width: 1000px) {
   .container {
     grid-template-columns: 1fr;
@@ -357,19 +298,16 @@ a:hover {
   body {
     padding: 12px;
   }
+
   h1 {
-    font-size: 28px;
+    font-size: 26px;
   }
-  .card {
-    padding: 16px;
-  }
-  .timer {
-    flex-wrap: wrap;
-  }
+
   .timer div {
     min-width: 45%;
   }
+
   .timer span {
-    font-size: 28px;
+    font-size: 22px;
   }
 }
