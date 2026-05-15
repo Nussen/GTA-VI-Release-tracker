@@ -46,18 +46,17 @@ async function getNews() {
 
   const html = await safeFetch("https://www.rockstargames.com/newswire");
 
-  if (!html) return [];
+  if (!html) return fallbackNewswire();
 
-  const regex = /href="(\/newswire\/[^"]+)"/g;
+  const matches = [...html.matchAll(/newswire\/article\/[a-zA-Z0-9]+\/[^\"]+/g)];
 
-  const matches = [...html.matchAll(regex)];
+  const posts = [];
 
   const seen = new Set();
-  const posts = [];
 
   for (const m of matches) {
 
-    const path = m[1];
+    const path = "/" + m[0].split("newswire")[1];
 
     if (seen.has(path)) continue;
     seen.add(path);
@@ -73,9 +72,7 @@ async function getNews() {
     if (posts.length >= 6) break;
   }
 
-  return posts.length
-    ? posts
-    : fallbackNewswire();
+  return posts.length ? posts : fallbackNewswire();
 }
 
 /* =========================
