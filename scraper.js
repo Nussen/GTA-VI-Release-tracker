@@ -48,8 +48,13 @@ function getNews() {
     {
       title: "GTA VI is Now Set to Launch November 19, 2026",
       link: "https://www.rockstargames.com/newswire/article/ak3ak31a49a221/grand-theft-auto-vi-is-now-set-to-launch-november-19-2026",
-      summary: "Official Rockstar Games announcement",
-      image: "https://media-rockstargames-com.akamaized.net/tina-uploads/posts/ak3ak31a49a221/90b4b8f63b8e62dbe56f6b8b3b4f5d7f9f352f1.jpg"
+      summary: "Official Rockstar Games announcement"
+    },
+
+    {
+      title: "Rockstar Newswire",
+      link: "https://www.rockstargames.com/newswire",
+      summary: "Latest Rockstar updates"
     }
   ];
 }
