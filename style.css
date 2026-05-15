@@ -248,6 +248,63 @@ h1 {
 }
 
 /* =========================
+   NEWSWIRE THUMBNAILS
+========================= */
+
+.news-item {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid #2a2a2a;
+}
+
+.news-item:last-child {
+  border-bottom: none;
+}
+
+.news-thumb {
+  width: 100%;
+  border-radius: 14px;
+  display: block;
+  object-fit: cover;
+  transition: transform 0.25s ease;
+}
+
+.news-thumb:hover {
+  transform: scale(1.01);
+}
+
+.news-content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.news-title {
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: 700;
+  line-height: 1.5;
+  font-size: 16px;
+}
+
+.news-title:hover {
+  color: #4caf50;
+}
+
+.news-summary {
+  color: #9a9a9a;
+  line-height: 1.5;
+  font-size: 14px;
+}
+
+.news-empty {
+  color: #888;
+  padding: 10px 0;
+}
+
+/* =========================
    WISHLIST BUTTON
 ========================= */
 .wishlist-btn {
