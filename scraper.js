@@ -5,33 +5,27 @@ import fs from "fs";
    SAFE FETCH WRAPPER
 ========================= */
 async function safeFetch(url) {
-
   try {
-
     const res = await fetch(url, {
       headers: {
-        "User-Agent": "Mozilla/5.0"
+        "User-Agent": "Mozilla/5.0 (GTA VI Tracker Bot)"
       }
     });
 
-    if (!res.ok) throw new Error("Request failed");
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
     return await res.text();
-
   } catch (err) {
-
-    console.error("Fetch failed:", url);
+    console.error("Fetch failed:", url, err.message);
     return "";
   }
 }
 
 /* =========================
-   STORE CHECK
+   STORE CHECK (IMPROVED)
 ========================= */
 async function checkStore(url, keywords = []) {
-
   const html = await safeFetch(url);
-
   if (!html) return false;
 
   const lower = html.toLowerCase();
@@ -40,45 +34,51 @@ async function checkStore(url, keywords = []) {
 }
 
 /* =========================
-   NEWSWIRE (IMPROVED PARSER)
+   NEWSWIRE (SAFE PARSER)
 ========================= */
-function getNews() {
+async function getNews() {
+  const html = await safeFetch("https://www.rockstargames.com/newswire");
 
-  return [
-    {
-      title: "GTA VI is Now Set to Launch November 19, 2026",
-      link: "https://www.rockstargames.com/newswire/article/ak3ak31a49a221/grand-theft-auto-vi-is-now-set-to-launch-november-19-2026",
-      summary: "Official Rockstar Games announcement"
-    },
+  if (!html) return fallbackNewswire();
 
-    {
-      title: "Rockstar Newswire",
-      link: "https://www.rockstargames.com/newswire",
-      summary: "Latest Rockstar updates"
-    }
-  ];
+  const regex = /href="(\/newswire\/[^"]+)"/g;
+  const matches = [...html.matchAll(regex)];
+
+  const seen = new Set();
+  const posts = [];
+
+  for (const m of matches) {
+    const path = m[1];
+
+    if (seen.has(path)) continue;
+    seen.add(path);
+
+    const fullUrl = "https://www.rockstargames.com" + path;
+
+    posts.push({
+      title: extractTitleFromUrl(path),
+      link: fullUrl,
+      summary: "Rockstar Newswire update"
+    });
+
+    if (posts.length >= 6) break;
+  }
+
+  return posts.length ? posts : fallbackNewswire();
 }
 
 /* =========================
-   NEWSWIRE TITLE CLEANER (UPDATED)
+   TITLE CLEANER
 ========================= */
-function cleanNewswireTitle(path) {
-
-  const slug = path.toLowerCase();
-
-  /* SPECIAL CASE: GTA VI ARTICLE */
-  if (slug.includes("grand-theft-auto-vi-is-now-set-to-launch")) {
-    return "GTA VI Launch Date Confirmed (Nov 19, 2026)";
-  }
-
+function extractTitleFromUrl(path) {
   const clean = path
     .replace("/newswire/", "")
     .replaceAll("-", " ")
-    .replace("/", "");
+    .replace(/\//g, "");
 
-  return clean
-    ? clean.charAt(0).toUpperCase() + clean.slice(1)
-    : "Rockstar Newswire Update";
+  if (!clean) return "Rockstar Newswire Update";
+
+  return clean.charAt(0).toUpperCase() + clean.slice(1);
 }
 
 /* =========================
@@ -89,16 +89,15 @@ function fallbackNewswire() {
     {
       title: "Rockstar Newswire",
       link: "https://www.rockstargames.com/newswire",
-      summary: "Unable to load live posts (fallback mode)"
+      summary: "Latest updates from Rockstar Games"
     }
   ];
 }
 
 /* =========================
-   TRAILERS
+   TRAILERS (STATIC CORE)
 ========================= */
 function getFixedTrailers() {
-
   return [
     {
       slot: "Trailer 1",
@@ -107,7 +106,6 @@ function getFixedTrailers() {
       videoId: "QdBZY2fkU-0",
       thumbnail: "https://img.youtube.com/vi/QdBZY2fkU-0/maxresdefault.jpg"
     },
-
     {
       slot: "Trailer 2",
       title: "Grand Theft Auto VI Trailer 2",
@@ -115,7 +113,6 @@ function getFixedTrailers() {
       videoId: "VQRLujxTm3c",
       thumbnail: "https://img.youtube.com/vi/VQRLujxTm3c/maxresdefault.jpg"
     },
-
     {
       slot: "Trailer 3",
       comingSoon: true
@@ -127,6 +124,7 @@ function getFixedTrailers() {
    MAIN RUNNER
 ========================= */
 async function run() {
+  console.log("🔄 Running GTA VI tracker scraper...");
 
   const ps = await checkStore(
     "https://store.playstation.com",
@@ -143,21 +141,17 @@ async function run() {
   const gtaviTrailers = getFixedTrailers();
 
   const data = {
+    releaseStatus: ps || xbox ? "🔥 PREORDER DETECTED" : "Monitoring Stores",
+    prediction: "2026",
 
-    releaseStatus:
-      ps || xbox
-        ? "🔥 PREORDER DETECTED"
-        : "Monitoring Stores",
-
-    prediction: "Prediction 2026-05-18",
-
-    releaseDate: "2026-11-19T00:00:00",
+    // IMPORTANT: ISO format safe for JS Date
+    releaseDate: "2026-11-19T00:00:00Z",
 
     playstation: ps ? "FOUND" : "Not listed",
     xbox: xbox ? "FOUND" : "Not listed",
 
-    psPreorder: ps ? "AVAILABLE 🔥" : "unavailable",
-    xboxPreorder: xbox ? "AVAILABLE 🔥" : "unavailable",
+    psPreorder: ps ? "Available 🔥" : "Not available",
+    xboxPreorder: xbox ? "Available 🔥" : "Not available",
 
     regions: {
       US: ps || xbox ? "LIVE" : "Pending",
@@ -167,15 +161,14 @@ async function run() {
     },
 
     newswire,
-    gtaviTrailers
+    gtaviTrailers,
+
+    lastUpdated: new Date().toISOString()
   };
 
-  fs.writeFileSync(
-    "data.json",
-    JSON.stringify(data, null, 2)
-  );
+  fs.writeFileSync("data.json", JSON.stringify(data, null, 2));
 
-  console.log("✅ data.json updated");
+  console.log("✅ data.json updated successfully");
 }
 
 run();
