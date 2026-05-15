@@ -112,7 +112,7 @@ h1 {
   justify-content: space-around;
   align-items: center;
   margin-top: 20px;
-  gap: 12px;
+  gap: 15px;
   flex-wrap: wrap;
 }
 
@@ -120,9 +120,9 @@ h1 {
 .timer div {
   flex: 1;
   min-width: 90px;
-  background: linear-gradient(145deg, #292929, #1c1c1c);
+  background: linear-gradient(145deg, #2e2e2e, #1d1d1d);
   border: 1px solid #202020;
-  padding: 18px;
+  padding: 9px;
   border-radius: 16px;
   text-align: center;
   box-shadow:
@@ -209,13 +209,21 @@ h1 {
 #regions {
   display: flex;
   flex-direction: column;
-  gap: 10px;
 }
 
 #regions div {
-  background: #292929;
   padding: 12px;
-  border-radius: 10px;
+  border-bottom: 1px solid #333;
+}
+
+#regions div:last-child {
+  border-bottom: none;
+}
+/*Flags*/
+#regions div {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 /* VIDEO */
