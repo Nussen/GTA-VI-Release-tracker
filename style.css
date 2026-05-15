@@ -57,6 +57,12 @@ h1 {
   gap: 20px;
 }
 
+/*Store Status*/
+.grid h4 {
+  margin-bottom: 8px;
+  color: #ddd;
+}
+
 /* BADGES */
 .badges {
   display: flex;
