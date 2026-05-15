@@ -251,7 +251,7 @@ async function loadData() {
       data.xboxPreorder
     );
 
-    /* =========================
+        /* =========================
        LOAD UI SECTIONS
     ========================= */
 
@@ -523,12 +523,14 @@ function loadRegions(
    NEWSWIRE
 ========================= */
 
-/* =========================
-   NEWSWIRE
-========================= */
-function loadNewswire(items) {
+function loadNewswire(
+  items
+) {
 
-  const box = document.getElementById("newswire");
+  const box =
+    document.getElementById(
+      "newswire"
+    );
 
   if (!box) return;
 
@@ -537,9 +539,7 @@ function loadNewswire(items) {
   if (!items.length) {
 
     box.innerHTML = `
-      <div class="news-empty">
-        No Rockstar Newswire posts available.
-      </div>
+      <p>No newswire posts available.</p>
     `;
 
     return;
@@ -547,41 +547,43 @@ function loadNewswire(items) {
 
   items.forEach(n => {
 
-    const div = document.createElement("div");
+    const div =
+      document.createElement(
+        "div"
+      );
 
-    div.className = "news-item";
+    div.className =
+      "news-card";
 
     div.innerHTML = `
 
-      ${
-        n.image
-          ? `
-            <a href="${n.link}" target="_blank">
-              <img
-                src="${n.image}"
-                alt="${n.title}"
-                class="news-thumb"
-              />
-            </a>
+      <a
+        href="${n.link}"
+        target="_blank"
+        class="news-link"
+      >
+
+        ${
+          n.image
+            ? `
+            <img
+              src="${n.image}"
+              alt="${n.title}"
+              class="news-image"
+            />
           `
-          : ""
-      }
+            : ""
+        }
 
-      <div class="news-content">
-
-        <a
-          href="${n.link}"
-          target="_blank"
-          class="news-title"
-        >
+        <div class="news-title">
           ${n.title}
-        </a>
+        </div>
 
-        <p class="news-summary">
-          ${n.summary || ""}
-        </p>
+      </a>
 
-      </div>
+      <p class="news-summary">
+        ${n.summary || ""}
+      </p>
     `;
 
     box.appendChild(div);
@@ -712,6 +714,7 @@ function fallbackTrailers() {
 /* =========================
    NOTIFICATIONS
 ========================= */
+
 function notifyUser(
   text
 ) {
@@ -721,8 +724,8 @@ function notifyUser(
   ) return;
 
   if (
-    Notification.permission ===
-    "granted"
+    Notification.permission
+    === "granted"
   ) {
 
     new Notification(text);
@@ -734,29 +737,3 @@ function notifyUser(
 ========================= */
 
 loadData();
-
-/* Optional real-time loop */
-/*
-setInterval(() => {
-  loadData();
-  checkForNewTrailers();
-}, 60000);
-*/
-
-setBadge(
-  "liveBadge",
-  "LIVE SYNC",
-  "online"
-);
-
-setBadge(
-  "trailerBadge",
-  "TRAILER WATCH",
-  "monitoring"
-);
-
-setBadge(
-  "releaseBadge",
-  "RELEASE TRACK",
-  "pending"
-);
