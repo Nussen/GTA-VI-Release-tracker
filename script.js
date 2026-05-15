@@ -114,7 +114,9 @@ async function loadData() {
             },
             {
               slot: "Trailer 3",
-              comingSoon: true
+              title: "Grand Theft Auto VI Trailer 3",
+              link: `https://www.youtube.com/watch?v=${videoId}`,
+              thumbnail: `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`
             }
           ]
     );
