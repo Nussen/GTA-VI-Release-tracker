@@ -51,26 +51,12 @@ async function loadData() {
       prediction.textContent = data.prediction || "";
     }
 
-    const lastUpdated = document.getElementById("lastUpdated");
-    if (lastUpdated) {
-      const updated = new Date(data.lastUpdated);
-      lastUpdated.textContent = Number.isNaN(updated.getTime())
-        ? "Last checked: unavailable"
-        : `Last checked: ${updated.toLocaleString(undefined, {
-            dateStyle: "medium",
-            timeStyle: "short"
-          })}`;
-      lastUpdated.dateTime = updated.toISOString();
-    }
-
     loadPriceMarkets(data);
 
     /* =========================
        LOAD UI
     ========================= */
-    loadRegions(data.regions || {});
     loadNewswire(data.newswire || []);
-
     const trailers = Array.isArray(data.gtaviTrailers) && data.gtaviTrailers.length
       ? data.gtaviTrailers
       : DEFAULT_TRAILERS;
@@ -85,17 +71,12 @@ async function loadData() {
         ? "online"
         : "monitoring"
     );
-
     startCountdown(data.releaseDate);
-
   } catch (err) {
     console.error("loadData error:", err);
 
     const releaseStatus = document.getElementById("releaseStatus");
     if (releaseStatus) releaseStatus.textContent = "Tracker data temporarily unavailable";
-
-    const lastUpdated = document.getElementById("lastUpdated");
-    if (lastUpdated) lastUpdated.textContent = "Refresh the page to try again";
   }
 }
 
@@ -224,28 +205,23 @@ function getPreorderText(value) {
 ========================= */
 function startCountdown(dateString) {
   const target = new Date(dateString).getTime();
-
-  if (isNaN(target)) {
-    console.error("Invalid releaseDate:", dateString);
-    return;
-  }
+  if (Number.isNaN(target)) return;
 
   function update() {
-    const now = Date.now();
-    const diff = target - now;
+    const diff = target - Date.now();
+    const values = diff <= 0
+      ? [0, 0, 0, 0]
+      : [
+          Math.floor(diff / 86400000),
+          Math.floor((diff % 86400000) / 3600000),
+          Math.floor((diff % 3600000) / 60000),
+          Math.floor((diff % 60000) / 1000)
+        ];
 
-    if (diff <= 0) {
-      document.getElementById("days").innerText = "0";
-      document.getElementById("hours").innerText = "0";
-      document.getElementById("minutes").innerText = "0";
-      document.getElementById("seconds").innerText = "0";
-      return;
-    }
-
-    document.getElementById("days").innerText = Math.floor(diff / 86400000);
-    document.getElementById("hours").innerText = Math.floor((diff % 86400000) / 3600000);
-    document.getElementById("minutes").innerText = Math.floor((diff % 3600000) / 60000);
-    document.getElementById("seconds").innerText = Math.floor((diff % 60000) / 1000);
+    ["days", "hours", "minutes", "seconds"].forEach((id, index) => {
+      const element = document.getElementById(id);
+      if (element) element.textContent = String(values[index]);
+    });
   }
 
   update();
@@ -253,84 +229,67 @@ function startCountdown(dateString) {
 }
 
 /* =========================
-   REGIONS
-========================= */
-function loadRegions(regions) {
-  const box = document.getElementById("regions");
-  if (!box) return;
-  box.replaceChildren();
-  const codes = {
-    US: "US",
-    Europe: "EU",
-    Japan: "JP",
-    Australia: "AU"
-  };
-
-  const labels = {
-    US: "United States",
-    Europe: "Europe",
-    Japan: "Japan",
-    Australia: "Australia"
-  };
-
-  Object.entries(regions).forEach(([key, value]) => {
-    const div = document.createElement("div");
-    const code = document.createElement("span");
-    code.className = "region-code";
-    code.textContent = codes[key] || "--";
-
-    const label = document.createElement("strong");
-    label.textContent = labels[key] || key;
-
-    div.append(code, label, document.createTextNode(`: ${value}`));
-    box.appendChild(div);
-  });
-}
-
-/* =========================
    NEWSWIRE
 ========================= */
 function loadNewswire(items) {
   const box = document.getElementById("newswire");
+  const toggle = document.getElementById("newsToggle");
   if (!box) return;
 
-  box.replaceChildren();
+  const newsItems = Array.isArray(items) ? items : [];
+  let expanded = false;
 
-  if (!items.length) {
-    const empty = document.createElement("p");
-    empty.className = "news-empty";
-    empty.textContent = "No Newswire updates found.";
-    box.appendChild(empty);
-    return;
+  function render() {
+    box.replaceChildren();
+
+    if (!newsItems.length) {
+      const empty = document.createElement("p");
+      empty.className = "news-empty";
+      empty.textContent = "No Newswire updates found.";
+      box.appendChild(empty);
+    }
+
+    newsItems.slice(0, expanded ? newsItems.length : 2).forEach(n => {
+      const div = document.createElement("div");
+
+      const link = document.createElement("a");
+      link.href = n.link || "https://www.rockstargames.com/newswire";
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      link.innerText = n.title || "Rockstar Newswire";
+
+      const summary = document.createElement("p");
+      summary.innerText = n.summary || "";
+
+      const readMore = document.createElement("a");
+      readMore.className = "news-read-more";
+      readMore.href = link.href;
+      readMore.target = "_blank";
+      readMore.rel = "noopener noreferrer";
+      readMore.textContent = "Read article";
+
+      const date = document.createElement("time");
+      date.textContent = n.date || "";
+      date.hidden = !n.date;
+
+      div.append(link, date, summary, readMore);
+      box.appendChild(div);
+    });
+
+    if (toggle) {
+      toggle.hidden = newsItems.length <= 2;
+      toggle.textContent = expanded ? "Show fewer news items" : "View all news";
+    }
   }
 
-  items.forEach(n => {
-    const div = document.createElement("div");
+  if (toggle) {
+    toggle.onclick = () => {
+      expanded = !expanded;
+      render();
+    };
+  }
 
-    const link = document.createElement("a");
-    link.href = n.link || "https://www.rockstargames.com/newswire";
-    link.target = "_blank";
-    link.rel = "noopener noreferrer";
-    link.innerText = n.title || "Rockstar Newswire";
-
-    const summary = document.createElement("p");
-    summary.innerText = n.summary || "";
-
-    const readMore = document.createElement("a");
-    readMore.className = "news-read-more";
-    readMore.href = link.href;
-    readMore.target = "_blank";
-    readMore.rel = "noopener noreferrer";
-    readMore.textContent = "Read article";
-
-    const date = document.createElement("time");
-    date.textContent = n.date || "";
-    date.hidden = !n.date;
-
-    div.append(link, date, summary, readMore);
-
-    box.appendChild(div);
-  });
+  render();
 }
 
 /* =========================
@@ -338,57 +297,77 @@ function loadNewswire(items) {
 ========================= */
 function loadGTAVITrailers(trailers) {
   const box = document.getElementById("latestVideo");
-  if (!box) return;
+  const tabs = document.getElementById("trailerTabs");
+  const activeTitle = document.getElementById("activeTrailerTitle");
+  if (!box || !tabs) return;
 
-  box.innerHTML = "";
+  box.replaceChildren();
+  tabs.replaceChildren();
 
-  trailers.forEach(t => {
-    const div = document.createElement("div");
-    div.style.marginBottom = "20px";
+  if (!trailers.length) {
+    box.textContent = "No trailers available.";
+    return;
+  }
 
-    if (t.comingSoon) {
-      div.innerHTML = `
-        <div class="video-container"
-          style="display:flex;align-items:center;justify-content:center;
-          background:#111;color:#aaa;font-size:18px;">
-          ${t.slot} — Coming soon
-        </div>
-      `;
+  const initialIndex = Math.max(0, trailers.findIndex(t => t.slot === "Trailer 3" && !t.comingSoon));
+
+  function renderTrailer(index) {
+    const trailer = trailers[index];
+    box.replaceChildren();
+
+    if (activeTitle) {
+      activeTitle.textContent = `| ${trailer.title || trailer.slot || "Trailer"}`;
+    }
+
+    tabs.querySelectorAll("button").forEach((button, buttonIndex) => {
+      const active = buttonIndex === index;
+      button.classList.toggle("active", active);
+      button.setAttribute("aria-selected", String(active));
+      button.tabIndex = active ? 0 : -1;
+    });
+
+    const item = document.createElement("div");
+    item.className = "trailer-item";
+
+    if (trailer.comingSoon) {
+      const placeholder = document.createElement("div");
+      placeholder.className = "video-placeholder";
+      placeholder.textContent = `${trailer.slot || "Trailer"} — Coming soon`;
+      item.appendChild(placeholder);
     } else {
-      const slot = document.createElement("div");
-      slot.innerText = t.slot || "Video";
-      slot.style.cssText = "color:#4caf50;font-weight:bold;margin-bottom:8px";
-
       const link = document.createElement("a");
-      link.href = t.link;
+      link.href = trailer.link;
       link.target = "_blank";
       link.rel = "noopener noreferrer";
 
       const image = document.createElement("img");
-      image.src = t.thumbnail;
-      image.alt = t.title || t.slot || "GTA VI video";
-      image.loading = "lazy";
+      image.src = trailer.thumbnail;
+      image.alt = trailer.title || trailer.slot || "GTA VI trailer";
+      image.loading = "eager";
       image.decoding = "async";
       image.onerror = () => {
         image.hidden = true;
       };
-      image.style.cssText = "width:100%;border-radius:12px;margin-bottom:10px;cursor:pointer;box-shadow:0 0 20px rgba(0,0,0,0.4)";
       link.appendChild(image);
-
-      const titleLink = document.createElement("a");
-      titleLink.href = t.link;
-      titleLink.target = "_blank";
-      titleLink.rel = "noopener noreferrer";
-      titleLink.innerText = t.title || t.slot || "GTA VI video";
-      titleLink.style.cssText = "color:white;font-weight:bold;text-decoration:none";
-
-      div.append(slot, link, titleLink);
+      item.appendChild(link);
     }
 
-    box.appendChild(div);
-  });
-}
+    box.appendChild(item);
+  }
 
+  trailers.forEach((trailer, index) => {
+    const tab = document.createElement("button");
+    tab.type = "button";
+    tab.className = "trailer-tab";
+    tab.role = "tab";
+    tab.textContent = trailer.slot || `Trailer ${index + 1}`;
+    tab.setAttribute("aria-controls", "latestVideo");
+    tab.addEventListener("click", () => renderTrailer(index));
+    tabs.appendChild(tab);
+  });
+
+  renderTrailer(initialIndex);
+}
 /* =========================
    INIT
 ========================= */

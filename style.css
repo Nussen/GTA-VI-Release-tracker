@@ -36,6 +36,9 @@ body {
 
 .site-header {
   grid-column: 1 / -1;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -45,6 +48,25 @@ body {
   border: 1px solid #2a2b33;
   border-radius: 14px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.site-header::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: -18px;
+  background-image:
+    linear-gradient(rgba(23, 24, 28, 0.72), rgba(23, 24, 28, 0.82)),
+    url("https://www.rockstargames.com/VI/_next/static/media/Grassrivers_04.01ckpqbhxyz76.jpg");
+  background-size: cover;
+  background-position: center;
+  filter: blur(10px);
+  opacity: 0.7;
+}
+
+.site-header > * {
+  position: relative;
+  z-index: 1;
 }
 
 /* =========================
@@ -106,6 +128,21 @@ h1 {
   margin-bottom: 2px;
 }
 
+.release-card {
+  padding-top: 16px;
+  padding-bottom: 16px;
+}
+
+.status-divider {
+  height: 1px;
+  margin: 14px 0;
+  background: #2f3038;
+}
+
+.preorder-section h3 {
+  margin-bottom: 4px;
+}
+
 .store-column {
   display: flex;
   flex-direction: column;
@@ -165,16 +202,10 @@ h1 {
   font-weight: 600;
 }
 
-#prediction {
-  color: #a9abb3;
-  font-size: 14px;
-}
-
-.last-updated {
-  display: block;
-  color: #777b86;
-  font-size: 12px;
-  margin-top: 6px;
+.release-date-display {
+  color: #e6e6e6;
+  font-size: 18px;
+  font-weight: 600;
 }
 
 .price-controls {
@@ -248,51 +279,72 @@ h1 {
 }
 
 /* =========================
-   REGIONS (CLEAN LIST)
+   TRAILERS
 ========================= */
-#regions {
+.trailer-tabs {
   display: flex;
-  flex-direction: column;
+  gap: 8px;
+  margin: 4px 0 14px;
+  overflow-x: auto;
+  scrollbar-width: thin;
 }
 
-#regions div {
-  padding: 12px 10px;
-  border-bottom: 1px solid #2a2b33;
+#activeTrailerTitle {
+  color: #a9abb3;
+  font-size: 0.75em;
+  font-weight: 500;
+}
+
+.trailer-tab {
+  flex: 1 0 auto;
+  padding: 8px 14px;
+  border: 1px solid #3a3b45;
+  border-radius: 8px;
+  background: #191a1f;
+  color: #a9abb3;
+  cursor: pointer;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.trailer-tab:hover,
+.trailer-tab.active {
+  color: #ffffff;
+  border-color: #66bb6a;
+  background: rgba(102, 187, 106, 0.14);
+}
+
+.trailer-panel {
+  min-height: 80px;
+}
+
+.trailer-item {
   display: flex;
-  align-items: center;
+  flex-direction: column;
   gap: 10px;
 }
 
-#regions div:last-child {
-  border-bottom: none;
-}
-
-.region-code {
-  min-width: 24px;
-  color: #a9abb3;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.4px;
-}
-
-/* =========================
-   TRAILERS
-========================= */
-.trailer-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.trailer-grid img {
+.trailer-item img {
   width: 100%;
   border-radius: 12px;
   cursor: pointer;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
   transition: transform 0.2s ease;
 }
 
-.trailer-grid img:hover {
+.trailer-item img:hover {
   transform: scale(1.01);
+}
+
+.video-placeholder {
+  min-height: 160px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: #111;
+  color: #a9abb3;
 }
 
 /* =========================
@@ -301,14 +353,34 @@ h1 {
 #newswire {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 8px;
   max-height: none;
   overflow: visible;
 }
 
+.news-card {
+  padding: 16px;
+}
+
+.news-toggle {
+  width: 100%;
+  margin-top: 12px;
+  padding: 8px 12px;
+  border: 1px solid #3a3b45;
+  border-radius: 8px;
+  background: #262730;
+  color: #e6e6e6;
+  cursor: pointer;
+  font: inherit;
+  font-size: 12px;
+}
+
+.news-toggle:hover {
+  background: #2f303a;
+}
 #newswire div {
   border-bottom: 1px solid #2a2b33;
-  padding-bottom: 10px;
+  padding-bottom: 6px;
 }
 
 #newswire div:last-child {
@@ -321,23 +393,30 @@ h1 {
   font-weight: 600;
 }
 
+#newswire > div > a:first-child {
+  display: block;
+  font-size: 14px;
+  line-height: 1.35;
+}
+
 #newswire a:hover {
   color: #66bb6a;
 }
 
 #newswire p {
   color: #a9abb3;
-  font-size: 13px;
-  margin-top: 4px;
+  font-size: 12px;
+  line-height: 1.4;
+  margin-top: 3px;
   display: -webkit-box;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 3;
+  -webkit-line-clamp: 2;
   overflow: hidden;
 }
 
 .news-read-more {
   display: inline-block;
-  margin-top: 8px;
+  margin-top: 5px;
   color: #66bb6a !important;
   font-size: 12px;
   font-weight: 600;
