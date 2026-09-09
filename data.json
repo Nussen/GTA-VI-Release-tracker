@@ -1,46 +1,66 @@
 {
-  "releaseStatus": "Monitoring Stores",
-  "prediction": "2026",
-
-  "releaseDate": "2026-11-19T00:00:00Z",
-
-  "playstation": "Checking...",
-  "xbox": "Checking...",
-
-  "psPreorder": "Not available",
-  "xboxPreorder": "Not available",
-
+  "releaseStatus": "🔥 PREORDERS AVAILABLE",
+  "prediction": "Official release date: November 19, 2026",
+  "releaseDate": "2026-11-19T00:00:00",
+  "playstation": {
+    "status": "Pre-order available",
+    "url": "https://store.playstation.com/en-us/product/EP1004-PPSA01547_00-GTAVISTANDARD001"
+  },
+  "xbox": {
+    "status": "Pre-order available",
+    "url": "https://www.xbox.com/en-us/games/grand-theft-auto-vi"
+  },
+  "psPreorder": {
+    "status": "Available",
+    "price": "$79.99 Standard / $99.99 Ultimate"
+  },
+  "xboxPreorder": {
+    "status": "Available",
+    "price": "See Microsoft Store"
+  },
   "regions": {
-    "US": "Pending",
-    "Europe": "Pending",
-    "Japan": "Pending",
+    "US": "LIVE",
+    "Europe": "LIVE",
+    "Japan": "LIVE",
     "Australia": "Pending"
   },
-
+  "newswire": [
+    {
+      "title": "Grand Theft Auto VI: An Extended Look — Now Playing",
+      "link": "https://www.rockstargames.com/newswire/article/4k138k8okkk483/grand-theft-auto-vi-an-extended-look-now-playing",
+      "summary": "The official GTA VI Extended Look is now available."
+    },
+    {
+      "title": "Grand Theft Auto VI Pre-Orders Begin on June 25",
+      "link": "https://www.rockstargames.com/newswire/article/517oa135328155/grand-theft-auto-vi-pre-orders-begin-on-june-25",
+      "summary": "Pre-orders are available on PlayStation 5 and Xbox Series X|S."
+    },
+    {
+      "title": "Grand Theft Auto VI: An Extended Look",
+      "link": "https://www.rockstargames.com/newswire/article/9k2kaa1o3297k9/grand-theft-auto-vi-an-extended-look",
+      "summary": "Official announcement from Rockstar Games."
+    }
+  ],
   "gtaviTrailers": [
     {
       "slot": "Trailer 1",
       "title": "Grand Theft Auto VI Trailer 1",
       "link": "https://www.youtube.com/watch?v=QdBZY2fkU-0",
+      "videoId": "QdBZY2fkU-0",
       "thumbnail": "https://img.youtube.com/vi/QdBZY2fkU-0/maxresdefault.jpg"
     },
     {
       "slot": "Trailer 2",
       "title": "Grand Theft Auto VI Trailer 2",
       "link": "https://www.youtube.com/watch?v=VQRLujxTm3c",
+      "videoId": "VQRLujxTm3c",
       "thumbnail": "https://img.youtube.com/vi/VQRLujxTm3c/maxresdefault.jpg"
     },
     {
       "slot": "Trailer 3",
-      "comingSoon": true
+      "title": "Grand Theft Auto VI: An Extended Look",
+      "link": "https://www.rockstargames.com/videos/rk721912",
+      "thumbnail": "https://www.rockstargames.com/VI/_next/static/media/GTAVI_An_Extended_Look_poster.0ijbsha5fo1te.jpg?akim=1&imdensity=1&imwidth=3840"
     }
-  ],
-
-  "newswire": [
-  {
-    "title": "...",
-    "link": "...",
-    "summary": "..."
-  }
-]
+  ]
 }

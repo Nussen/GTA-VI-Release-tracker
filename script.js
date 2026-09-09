@@ -13,62 +13,26 @@ function setBadge(id, text, type) {
   el.classList.add(type);
 }
 
-/* =========================
-   TRAILER 3 DISPLAY
-========================= */
-function showTrailer3(videoId) {
-  loadGTAVITrailers([
-    {
-      slot: "Trailer 1",
-      title: "Grand Theft Auto VI Trailer 1",
-      link: "https://www.youtube.com/watch?v=QdBZY2fkU-0",
-      thumbnail: "https://img.youtube.com/vi/QdBZY2fkU-0/maxresdefault.jpg"
-    },
-    {
-      slot: "Trailer 2",
-      title: "Grand Theft Auto VI Trailer 2",
-      link: "https://www.youtube.com/watch?v=VQRLujxTm3c",
-      thumbnail: "https://img.youtube.com/vi/VQRLujxTm3c/maxresdefault.jpg"
-    },
-    {
-      slot: "Trailer 3",
-      title: "Grand Theft Auto VI Trailer 3",
-      link: `https://www.youtube.com/watch?v=${videoId}`,
-      thumbnail: `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`
-    }
-  ]);
-}
-
-/* =========================
-   TRAILER 3 DETECTION
-========================= */
-async function checkForNewTrailers() {
-  try {
-    const res = await fetch("/api/youtube");
-    if (!res.ok) throw new Error("YouTube API failed");
-
-    const data = await res.json();
-
-    setBadge("trailerBadge", "TRAILER WATCH", "monitoring");
-
-    const known = ["QdBZY2fkU-0", "VQRLujxTm3c"];
-
-    const videos = data.items || [];
-
-    const newVideo = videos.find(
-      v => v.id?.videoId && !known.includes(v.id.videoId)
-    );
-
-    if (newVideo?.id?.videoId) {
-      showTrailer3(newVideo.id.videoId);
-      setBadge("trailerBadge", "TRAILER 3 DROPPED", "online");
-      notifyUser("🚨 Trailer 3 just dropped!");
-    }
-  } catch (err) {
-    setBadge("trailerBadge", "OFFLINE", "pending");
-    console.error("Trailer check failed:", err);
+const DEFAULT_TRAILERS = [
+  {
+    slot: "Trailer 1",
+    title: "Grand Theft Auto VI Trailer 1",
+    link: "https://www.youtube.com/watch?v=QdBZY2fkU-0",
+    thumbnail: "https://img.youtube.com/vi/QdBZY2fkU-0/maxresdefault.jpg"
+  },
+  {
+    slot: "Trailer 2",
+    title: "Grand Theft Auto VI Trailer 2",
+    link: "https://www.youtube.com/watch?v=VQRLujxTm3c",
+    thumbnail: "https://img.youtube.com/vi/VQRLujxTm3c/maxresdefault.jpg"
+  },
+  {
+    slot: "Trailer 3",
+    title: "Grand Theft Auto VI: An Extended Look",
+    link: "https://www.rockstargames.com/videos/rk721912",
+    thumbnail: "https://www.rockstargames.com/VI/_next/static/media/GTAVI_An_Extended_Look_poster.0ijbsha5fo1te.jpg?akim=1&imdensity=1&imwidth=3840"
   }
-}
+];
 
 /* =========================
    LOAD DATA
@@ -92,8 +56,8 @@ async function loadData() {
     const psStatus = document.getElementById("psStatus");
     const xboxStatus = document.getElementById("xboxStatus");
 
-    if (psStatus) psStatus.innerText = data.playstation || "";
-    if (xboxStatus) xboxStatus.innerText = data.xbox || "";
+    if (psStatus) psStatus.innerText = getStoreStatus(data.playstation);
+    if (xboxStatus) xboxStatus.innerText = getStoreStatus(data.xbox);
 
     /* =========================
        PREORDER COLORS (FIXED)
@@ -105,14 +69,14 @@ async function loadData() {
     function applyPreorderStyle(el, value) {
       if (!el) return;
 
-      const text = value || "";
+      const text = getPreorderText(value);
       const lower = text.toLowerCase();
 
       el.innerText = text;
 
       el.classList.remove("available", "unavailable");
 
-      if (lower === "available 🔥" || lower === "available") {
+      if (lower.includes("available") && !lower.includes("not available")) {
         el.classList.add("available");
       } else {
         el.classList.add("unavailable");
@@ -128,27 +92,19 @@ async function loadData() {
     loadRegions(data.regions || {});
     loadNewswire(data.newswire || []);
 
-    loadGTAVITrailers(
-      Array.isArray(data.gtaviTrailers) && data.gtaviTrailers.length
-        ? data.gtaviTrailers
-        : [
-            {
-              slot: "Trailer 1",
-              title: "GTA VI Trailer 1",
-              link: "https://www.youtube.com/watch?v=QdBZY2fkU-0",
-              thumbnail: "https://img.youtube.com/vi/QdBZY2fkU-0/maxresdefault.jpg"
-            },
-            {
-              slot: "Trailer 2",
-              title: "GTA VI Trailer 2",
-              link: "https://www.youtube.com/watch?v=VQRLujxTm3c",
-              thumbnail: "https://img.youtube.com/vi/VQRLujxTm3c/maxresdefault.jpg"
-            },
-            {
-              slot: "Trailer 3",
-              comingSoon: true
-            }
-          ]
+    const trailers = Array.isArray(data.gtaviTrailers) && data.gtaviTrailers.length
+      ? data.gtaviTrailers
+      : DEFAULT_TRAILERS;
+
+    loadGTAVITrailers(trailers);
+    setBadge(
+      "trailerBadge",
+      trailers.some(t => t.slot === "Trailer 3" && !t.comingSoon)
+        ? "TRAILER 3 LIVE"
+        : "TRAILER WATCH",
+      trailers.some(t => t.slot === "Trailer 3" && !t.comingSoon)
+        ? "online"
+        : "monitoring"
     );
 
     startCountdown(data.releaseDate);
@@ -156,6 +112,18 @@ async function loadData() {
   } catch (err) {
     console.error("loadData error:", err);
   }
+}
+
+function getStoreStatus(store) {
+  return typeof store === "object" ? store.status || "" : store || "";
+}
+
+function getPreorderText(value) {
+  if (typeof value === "object") {
+    return [value.status, value.price].filter(Boolean).join(" · ");
+  }
+
+  return value || "Not available";
 }
 
 /* =========================
@@ -229,10 +197,16 @@ function loadNewswire(items) {
   items.forEach(n => {
     const div = document.createElement("div");
 
-    div.innerHTML = `
-      <a href="${n.link}" target="_blank">${n.title}</a>
-      <p>${n.summary || ""}</p>
-    `;
+    const link = document.createElement("a");
+    link.href = n.link || "https://www.rockstargames.com/newswire";
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+    link.innerText = n.title || "Rockstar Newswire";
+
+    const summary = document.createElement("p");
+    summary.innerText = n.summary || "";
+
+    div.append(link, summary);
 
     box.appendChild(div);
   });
@@ -260,21 +234,29 @@ function loadGTAVITrailers(trailers) {
         </div>
       `;
     } else {
-      div.innerHTML = `
-        <div style="color:#4caf50;font-weight:bold;margin-bottom:8px">
-          ${t.slot}
-        </div>
+      const slot = document.createElement("div");
+      slot.innerText = t.slot || "Video";
+      slot.style.cssText = "color:#4caf50;font-weight:bold;margin-bottom:8px";
 
-        <a href="${t.link}" target="_blank">
-          <img src="${t.thumbnail}" style="width:100%;border-radius:12px;margin-bottom:10px;cursor:pointer;box-shadow:0 0 20px rgba(0,0,0,0.4);" />
-        </a>
+      const link = document.createElement("a");
+      link.href = t.link;
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
 
-        <div>
-          <a href="${t.link}" target="_blank" style="color:white;font-weight:bold;text-decoration:none">
-            ${t.title}
-          </a>
-        </div>
-      `;
+      const image = document.createElement("img");
+      image.src = t.thumbnail;
+      image.alt = t.title || t.slot || "GTA VI video";
+      image.style.cssText = "width:100%;border-radius:12px;margin-bottom:10px;cursor:pointer;box-shadow:0 0 20px rgba(0,0,0,0.4)";
+      link.appendChild(image);
+
+      const titleLink = document.createElement("a");
+      titleLink.href = t.link;
+      titleLink.target = "_blank";
+      titleLink.rel = "noopener noreferrer";
+      titleLink.innerText = t.title || t.slot || "GTA VI video";
+      titleLink.style.cssText = "color:white;font-weight:bold;text-decoration:none";
+
+      div.append(slot, link, titleLink);
     }
 
     box.appendChild(div);
