@@ -1,5 +1,3 @@
-const CHANNEL_ID = "UC6VcWc1rAoWdBCM0JxrRQ3A";
-
 /* =========================
    BADGE SYSTEM
 ========================= */
@@ -39,7 +37,7 @@ const DEFAULT_TRAILERS = [
 ========================= */
 async function loadData() {
   try {
-    const res = await fetch("data.json");
+    const res = await fetch(`data.json?ts=${Date.now()}`, { cache: "no-store" });
     const data = await res.json();
 
     const releaseStatus = document.getElementById("releaseStatus");
@@ -50,41 +48,22 @@ async function loadData() {
     }
 
     if (prediction) {
-      prediction.innerText = data.prediction || "";
+      prediction.textContent = data.prediction || "";
     }
 
-    const psStatus = document.getElementById("psStatus");
-    const xboxStatus = document.getElementById("xboxStatus");
-
-    if (psStatus) psStatus.innerText = getStoreStatus(data.playstation);
-    if (xboxStatus) xboxStatus.innerText = getStoreStatus(data.xbox);
-
-    /* =========================
-       PREORDER COLORS (FIXED)
-    ========================= */
-
-    const psPreorder = document.getElementById("psPreorder");
-    const xboxPreorder = document.getElementById("xboxPreorder");
-
-    function applyPreorderStyle(el, value) {
-      if (!el) return;
-
-      const text = getPreorderText(value);
-      const lower = text.toLowerCase();
-
-      el.innerText = text;
-
-      el.classList.remove("available", "unavailable");
-
-      if (lower.includes("available") && !lower.includes("not available")) {
-        el.classList.add("available");
-      } else {
-        el.classList.add("unavailable");
-      }
+    const lastUpdated = document.getElementById("lastUpdated");
+    if (lastUpdated) {
+      const updated = new Date(data.lastUpdated);
+      lastUpdated.textContent = Number.isNaN(updated.getTime())
+        ? "Last checked: unavailable"
+        : `Last checked: ${updated.toLocaleString(undefined, {
+            dateStyle: "medium",
+            timeStyle: "short"
+          })}`;
+      lastUpdated.dateTime = updated.toISOString();
     }
 
-    applyPreorderStyle(psPreorder, data.psPreorder);
-    applyPreorderStyle(xboxPreorder, data.xboxPreorder);
+    loadPriceMarkets(data);
 
     /* =========================
        LOAD UI
@@ -111,6 +90,12 @@ async function loadData() {
 
   } catch (err) {
     console.error("loadData error:", err);
+
+    const releaseStatus = document.getElementById("releaseStatus");
+    if (releaseStatus) releaseStatus.textContent = "Tracker data temporarily unavailable";
+
+    const lastUpdated = document.getElementById("lastUpdated");
+    if (lastUpdated) lastUpdated.textContent = "Refresh the page to try again";
   }
 }
 
@@ -118,8 +103,116 @@ function getStoreStatus(store) {
   return typeof store === "object" ? store.status || "" : store || "";
 }
 
+function applyPreorderStyle(el, value) {
+  if (!el) return;
+
+  const text = getPreorderText(value);
+  const status = typeof value === "object" ? value.status || "" : text;
+  const lowerStatus = status.toLowerCase();
+
+  el.textContent = text;
+  el.classList.remove("available", "unavailable");
+
+  if (lowerStatus.includes("available") && !lowerStatus.includes("not available")) {
+    el.classList.add("available");
+  } else {
+    el.classList.add("unavailable");
+  }
+}
+
+function getPreferredMarket(markets) {
+  const locale = (navigator.language || "").toLowerCase();
+  const region = locale.split("-")[1]?.toUpperCase();
+  const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone || "";
+
+  if (locale.startsWith("sv") || region === "SE" || timeZone === "Europe/Stockholm") {
+    return markets.SEK ? "SEK" : "USD";
+  }
+  if (region === "AU" || timeZone.startsWith("Australia/")) {
+    return markets.AUD ? "AUD" : "USD";
+  }
+  if (locale.startsWith("en-gb") || region === "GB") return markets.GBP ? "GBP" : "USD";
+
+  const euroRegions = ["AT", "BE", "DE", "ES", "FI", "FR", "IE", "IT", "LU", "NL", "PT"];
+  if (euroRegions.includes(region)) return markets.EUR ? "EUR" : "USD";
+
+  return markets.USD ? "USD" : Object.keys(markets)[0];
+}
+
+function loadPriceMarkets(data) {
+  const selector = document.getElementById("priceMarket");
+  const psStatus = document.getElementById("psStatus");
+  const xboxStatus = document.getElementById("xboxStatus");
+  const psPreorder = document.getElementById("psPreorder");
+  const xboxPreorder = document.getElementById("xboxPreorder");
+  const psWishlist = document.getElementById("psWishlist");
+  const xboxWishlist = document.getElementById("xboxWishlist");
+  const markets = data.priceMarkets || {};
+
+  if (!Object.keys(markets).length) {
+    if (psStatus) psStatus.textContent = getStoreStatus(data.playstation);
+    if (xboxStatus) xboxStatus.textContent = getStoreStatus(data.xbox);
+    applyPreorderStyle(psPreorder, data.psPreorder);
+    applyPreorderStyle(xboxPreorder, data.xboxPreorder);
+    return;
+  }
+
+  if (selector) {
+    selector.replaceChildren();
+    Object.entries(markets).forEach(([key, market]) => {
+      const option = document.createElement("option");
+      option.value = key;
+      option.textContent = market.label || key;
+      selector.appendChild(option);
+    });
+  }
+
+  let savedMarket = "";
+  try {
+    savedMarket = localStorage.getItem("gta-vi-price-market") || "";
+  } catch {
+    // Local storage may be unavailable for file:// previews.
+  }
+
+  const initialMarket = markets[savedMarket] ? savedMarket : getPreferredMarket(markets);
+  if (selector) selector.value = initialMarket;
+
+  function renderMarket() {
+    const key = selector?.value || initialMarket;
+    const market = markets[key] || markets[initialMarket];
+    if (!market) return;
+
+    if (psStatus) psStatus.textContent = getStoreStatus(market.playstation);
+    if (xboxStatus) xboxStatus.textContent = getStoreStatus(market.xbox);
+    applyPreorderStyle(psPreorder, market.psPreorder);
+    applyPreorderStyle(xboxPreorder, market.xboxPreorder);
+
+    if (psWishlist) psWishlist.href = market.playstation.url;
+    if (xboxWishlist) xboxWishlist.href = market.xbox.url;
+  }
+
+  if (selector) {
+    selector.onchange = () => {
+      try {
+        localStorage.setItem("gta-vi-price-market", selector.value);
+      } catch {
+        // Continue without persistence when storage is unavailable.
+      }
+      renderMarket();
+    };
+  }
+
+  renderMarket();
+}
+
 function getPreorderText(value) {
   if (typeof value === "object") {
+    const status = String(value.status || "").toLowerCase();
+
+    if (status === "available") {
+      return value.price || "Pre-order available";
+    }
+
     return [value.status, value.price].filter(Boolean).join(" · ");
   }
 
@@ -165,22 +258,31 @@ function startCountdown(dateString) {
 function loadRegions(regions) {
   const box = document.getElementById("regions");
   if (!box) return;
+  box.replaceChildren();
+  const codes = {
+    US: "US",
+    Europe: "EU",
+    Japan: "JP",
+    Australia: "AU"
+  };
 
-  box.innerHTML = "";
-
-  const flags = {
-    US: "🇺🇸",
-    Europe: "🇪🇺",
-    Japan: "🇯🇵",
-    Australia: "🇦🇺"
+  const labels = {
+    US: "United States",
+    Europe: "Europe",
+    Japan: "Japan",
+    Australia: "Australia"
   };
 
   Object.entries(regions).forEach(([key, value]) => {
     const div = document.createElement("div");
-    div.innerHTML = `
-      <span style="margin-right:8px">${flags[key] || "🌍"}</span>
-      <strong>${key}</strong>: ${value}
-    `;
+    const code = document.createElement("span");
+    code.className = "region-code";
+    code.textContent = codes[key] || "--";
+
+    const label = document.createElement("strong");
+    label.textContent = labels[key] || key;
+
+    div.append(code, label, document.createTextNode(`: ${value}`));
     box.appendChild(div);
   });
 }
@@ -192,7 +294,15 @@ function loadNewswire(items) {
   const box = document.getElementById("newswire");
   if (!box) return;
 
-  box.innerHTML = "";
+  box.replaceChildren();
+
+  if (!items.length) {
+    const empty = document.createElement("p");
+    empty.className = "news-empty";
+    empty.textContent = "No Newswire updates found.";
+    box.appendChild(empty);
+    return;
+  }
 
   items.forEach(n => {
     const div = document.createElement("div");
@@ -206,7 +316,18 @@ function loadNewswire(items) {
     const summary = document.createElement("p");
     summary.innerText = n.summary || "";
 
-    div.append(link, summary);
+    const readMore = document.createElement("a");
+    readMore.className = "news-read-more";
+    readMore.href = link.href;
+    readMore.target = "_blank";
+    readMore.rel = "noopener noreferrer";
+    readMore.textContent = "Read article";
+
+    const date = document.createElement("time");
+    date.textContent = n.date || "";
+    date.hidden = !n.date;
+
+    div.append(link, date, summary, readMore);
 
     box.appendChild(div);
   });
@@ -246,6 +367,11 @@ function loadGTAVITrailers(trailers) {
       const image = document.createElement("img");
       image.src = t.thumbnail;
       image.alt = t.title || t.slot || "GTA VI video";
+      image.loading = "lazy";
+      image.decoding = "async";
+      image.onerror = () => {
+        image.hidden = true;
+      };
       image.style.cssText = "width:100%;border-radius:12px;margin-bottom:10px;cursor:pointer;box-shadow:0 0 20px rgba(0,0,0,0.4)";
       link.appendChild(image);
 
@@ -264,21 +390,10 @@ function loadGTAVITrailers(trailers) {
 }
 
 /* =========================
-   NOTIFICATIONS
-========================= */
-function notifyUser(text) {
-  if (!("Notification" in window)) return;
-
-  if (Notification.permission === "granted") {
-    new Notification(text);
-  }
-}
-
-/* =========================
    INIT
 ========================= */
 loadData();
 
-setBadge("liveBadge", "LIVE SYNC", "online");
+setBadge("liveBadge", "AUTO-UPDATED", "online");
 setBadge("trailerBadge", "TRAILER WATCH", "monitoring");
 setBadge("releaseBadge", "RELEASE TRACK", "pending");
