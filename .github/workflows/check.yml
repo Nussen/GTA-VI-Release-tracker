@@ -26,17 +26,9 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: "npm"
 
       # =========================
-      # INSTALL DEPENDENCIES
-      # =========================
-      - name: Install dependencies
-        run: |
-          npm install --omit=dev
-
-      # =========================
-      # RUN SCRAPER (SAFE MODE)
+      # RUN SCRAPER
       # =========================
       - name: Run scraper
         run: node scraper.js
