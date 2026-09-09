@@ -6,6 +6,10 @@ on:
 
   workflow_dispatch:
 
+concurrency:
+  group: gta-vi-tracker-update
+  cancel-in-progress: true
+
 jobs:
   tracker:
 
@@ -33,6 +37,12 @@ jobs:
       - name: Run scraper
         run: node scraper.js
         continue-on-error: false
+
+      - name: Validate generated files
+        run: |
+          node --check scraper.js
+          node --check script.js
+          node -e "JSON.parse(require('fs').readFileSync('data.json', 'utf8'))"
 
       # =========================
       # COMMIT CHANGES ONLY IF NEEDED
