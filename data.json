@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-11-23T03:37:31.969Z",
+  "lastUpdated": "2026-11-23T14:16:21.604Z",
   "releaseStatus": "🔥 PREORDERS AVAILABLE",
   "prediction": "Official release date: November 19, 2026",
   "releaseDate": "2026-11-19T00:00:00",
@@ -53,7 +53,7 @@
       },
       "psPreorder": {
         "status": "Available",
-        "price": "79,99 € Standard / 99,99 € Ultimate"
+        "price": "79,99 € Standard / 80,00 € Ultimate"
       },
       "xboxPreorder": {
         "status": "Available",
@@ -129,6 +129,12 @@
   },
   "newswire": [
     {
+      "title": "Grand Theft Auto VI: The Album (Deluxe Edition)",
+      "link": "https://www.rockstargames.com/newswire/article/178ok8411a55o5",
+      "date": "November 23, 2026",
+      "summary": "Now available on all major music streaming services, Grand Theft Auto VI: The Album (Deluxe Edition) features 23 bonus tracks from Grand Theft Auto VI, including contributions from The Dare, Slayyyter, Denzel Curry, HEALTH, Power Trip, Real Dimez x..."
+    },
+    {
       "title": "Grand Theft Auto VI Now Available",
       "link": "https://www.rockstargames.com/newswire/article/39akk424a9oo53",
       "date": "November 19, 2026",
@@ -139,12 +145,6 @@
       "link": "https://www.rockstargames.com/newswire/article/89834o94713o21",
       "date": "November 10, 2026",
       "summary": "Pre-loading is now available for everyone who has pre-ordered Grand Theft Auto VI digitally. Players who pre-ordered the code-in-box version can also activate their code and begin pre-loading as soon as it&rsquo;s received. If you still have yet to..."
-    },
-    {
-      "title": "Explore the Grand Theft Auto VI Launch Gallery",
-      "link": "https://www.rockstargames.com/newswire/article/39ak81277255o9",
-      "date": "November 5, 2026",
-      "summary": "Grand Theft Auto VI is now officially only two weeks away. Today, enjoy a stunning look at Vice City and beyond with a collection of new screenshots on the official site."
     }
   ],
   "gtaviTrailers": [
