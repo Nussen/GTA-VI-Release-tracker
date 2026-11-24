@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-11-23T14:16:21.604Z",
+  "lastUpdated": "2026-11-24T01:49:34.286Z",
   "releaseStatus": "🔥 PREORDERS AVAILABLE",
   "prediction": "Official release date: November 19, 2026",
   "releaseDate": "2026-11-19T00:00:00",
@@ -17,7 +17,7 @@
   },
   "xboxPreorder": {
     "status": "Available",
-    "price": "$31.99 Standard / $34.99 Ultimate"
+    "price": "$34.99 Standard / $39.99 Ultimate"
   },
   "priceMarkets": {
     "USD": {
@@ -37,7 +37,7 @@
       },
       "xboxPreorder": {
         "status": "Available",
-        "price": "$31.99 Standard / $34.99 Ultimate"
+        "price": "$34.99 Standard / $39.99 Ultimate"
       }
     },
     "EUR": {
@@ -53,11 +53,11 @@
       },
       "psPreorder": {
         "status": "Available",
-        "price": "79,99 € Standard / 80,00 € Ultimate"
+        "price": "79,99 € Standard / 99,99 € Ultimate"
       },
       "xboxPreorder": {
         "status": "Available",
-        "price": "32,99 € Standard / 34,99 € Ultimate"
+        "price": "34,99 € Standard / 39,99 € Ultimate"
       }
     },
     "SEK": {
@@ -97,7 +97,7 @@
       },
       "xboxPreorder": {
         "status": "Available",
-        "price": "£31.49 Standard / £34.99 Ultimate"
+        "price": "£31.49 Standard / £37.49 Ultimate"
       }
     },
     "AUD": {
@@ -117,7 +117,7 @@
       },
       "xboxPreorder": {
         "status": "Available",
-        "price": "AU$32.19 Standard / AU$37.45 Ultimate"
+        "price": "AU$37.45 Standard / AU$41.45 Ultimate"
       }
     }
   },
